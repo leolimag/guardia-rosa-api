@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class TesteController {
 	
 	@GetMapping
-	public ResponseEntity<Teste> teste() {
-		Teste teste = new Teste();
-		teste.setNumero(1);
-		teste.setConteudo("parabéns");
+	public ResponseEntity<Object> teste() {
+		Object teste = new Object();
+//		teste.setNumero(1);
+//		teste.setConteudo("parabéns");
 		return ResponseEntity.ok(teste);
 	}
 
