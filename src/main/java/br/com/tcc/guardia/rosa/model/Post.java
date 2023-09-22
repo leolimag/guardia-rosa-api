@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -25,6 +26,7 @@ public class Post {
 	private String conteudo;
 	private Long curtidas;
 	@	NotNull @NotBlank
+	@ManyToOne
 	private Usuario usuario;
 	@	NotNull @NotBlank
 	private LocalDate dataCriacao;

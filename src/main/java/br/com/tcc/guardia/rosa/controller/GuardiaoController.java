@@ -34,7 +34,7 @@ import br.com.tcc.guardia.rosa.model.Guardiao;
 @RequestMapping("/api/guardiao")
 public class GuardiaoController {
 	
-	private final  GuardiaoBusiness business; 
+	private final GuardiaoBusiness business; 
 	private final UsuarioBusiness usuarioBusiness; 
 
 	@Autowired

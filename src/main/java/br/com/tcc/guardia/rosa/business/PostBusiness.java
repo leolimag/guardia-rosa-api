@@ -1,10 +1,10 @@
 package br.com.tcc.guardia.rosa.business;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.tcc.guardia.rosa.dto.PostForm;
@@ -20,14 +20,13 @@ public class PostBusiness {
 	@Autowired
 	private UsuarioBusiness usuarioBusiness;
 	
-	
-	public List<Post> getPostsByUser(Long id) {
+	public Page<Post> getPostsByUser(Long id, Pageable pageable) {
 		Optional<Usuario> usuario = usuarioBusiness.findById(id);
 		if (usuario.isPresent()) {
-			return repository.findByUsuarioOrderById(usuario.get());
+			return repository.findByUsuarioOrderById(usuario.get(), pageable);
 		}
 		
-		return new ArrayList<>();
+		return null;
 	}
 	
 	public void addPost(PostForm postForm) {
@@ -35,8 +34,8 @@ public class PostBusiness {
 		repository.save(post);
 	}
 	
-	public List<Post> getAllPosts() {
-		return repository.findAllByOrderByIdDesc();
+	public Page<Post> getAllPosts(Pageable pageable) {
+		return repository.findAllByOrderByIdDesc(pageable);
 	}
 
 }
