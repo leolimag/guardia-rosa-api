@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -12,54 +11,38 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "post")
-public class Post {
+@Table(name = "comentario")
+public class Comentario {
 	
-	private static final long serialVersionUID = 1L;
-	
+	@GeneratedValue
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@	NotNull @NotBlank
-	private String titulo;
 	@	NotNull @NotBlank
 	private String conteudo;
 	private Long curtidas;
 	@ManyToOne
 	private Usuario usuario;
+	@ManyToOne
+	private Post post;
+	@	NotNull @NotBlank
 	private LocalDate dataCriacao;
 	
-	public Post() {}
-	
-	public Post(Long id, @NotNull @NotBlank String titulo, @NotNull @NotBlank String conteudo, Long curtidas,
-			@NotNull @NotBlank Usuario usuario, @NotNull @NotBlank LocalDate dataCriacao) {
+	public Comentario() {}
+
+	public Comentario(Long id, @NotNull @NotBlank String conteudo, Long curtidas, Usuario usuario, Post post,
+			@NotNull @NotBlank LocalDate dataCriacao) {
 		this.id = id;
-		this.titulo = titulo;
 		this.conteudo = conteudo;
 		this.curtidas = curtidas;
 		this.usuario = usuario;
+		this.post = post;
 		this.dataCriacao = dataCriacao;
 	}
-	
-	public Post(@NotNull @NotBlank String titulo, @NotNull @NotBlank String conteudo,
-			@NotNull @NotBlank Usuario usuario, @NotNull @NotBlank LocalDate dataCriacao) {
-		this.titulo = titulo;
-		this.conteudo = conteudo;
-		this.usuario = usuario;
-		this.dataCriacao = dataCriacao;
-	}
-
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public String getTitulo() {
-		return titulo;
-	}
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
 	}
 	public String getConteudo() {
 		return conteudo;
@@ -79,15 +62,17 @@ public class Post {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+	public Post getPost() {
+		return post;
+	}
+	public void setPost(Post post) {
+		this.post = post;
+	}
 	public LocalDate getDataCriacao() {
 		return dataCriacao;
 	}
 	public void setDataCriacao(LocalDate dataCriacao) {
 		this.dataCriacao = dataCriacao;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 	
 }

@@ -1,14 +1,21 @@
-package br.com.tcc.guardia.rosa.dto;
+package br.com.tcc.guardia.rosa.form;
 
 import java.time.LocalDate;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.model.Post;
 
 public class PostForm {
 	
+	@NotNull @NotEmpty
 	private String titulo;
+	@NotNull @NotEmpty
 	private String conteudo;
+	@NotNull @Min(value = 1)
 	private Long usuarioId;
 	private LocalDate dataCriacao = LocalDate.now();
 	

@@ -7,7 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.tcc.guardia.rosa.dto.UpdateGuardiaoForm;
+import br.com.tcc.guardia.rosa.form.GuardiaoForm;
+import br.com.tcc.guardia.rosa.form.UpdateGuardiaoForm;
 import br.com.tcc.guardia.rosa.model.Guardiao;
 import br.com.tcc.guardia.rosa.repository.GuardiaoRepository;
 
@@ -16,14 +17,19 @@ public class GuardiaoBusiness {
 	
 	@Autowired
 	private GuardiaoRepository repository;
+	@Autowired
+	private UsuarioBusiness usuarioBusiness;
 	
 	public Page<Guardiao> getGuardioesByUsuario(Long id, Pageable pageable) {	
 		Page<Guardiao> guardioes = repository.findByUsuarioId(id, pageable);
 		return guardioes;
 	}
 	
-	public void addGuardiao(Guardiao guardiao) {
+	public Guardiao addGuardiao(GuardiaoForm guardiaoForm) {
+		Guardiao guardiao = guardiaoForm.toGuardiao(usuarioBusiness);
 		repository.save(guardiao);
+		
+		return guardiao;
 	}
 	
 	public void deleteGuardiao(Long id) {
@@ -32,11 +38,12 @@ public class GuardiaoBusiness {
 	
 	public Guardiao updateGuardiao(Long id, UpdateGuardiaoForm guardiaoForm) {
 		Guardiao guardiao = findById(id).get();
-		guardiao.setEmail(guardiaoForm.getEmail());
-		guardiao.setNome(guardiaoForm.getNome());
-		guardiao.setTelefone(guardiaoForm.getTelefone());
-		
-		repository.save(guardiao);
+		if (guardiao != null) {
+			guardiao.setEmail(guardiaoForm.getEmail());
+			guardiao.setNome(guardiaoForm.getNome());
+			guardiao.setTelefone(guardiaoForm.getTelefone());
+			repository.save(guardiao);
+		}
 		return guardiao;
 	}
 	

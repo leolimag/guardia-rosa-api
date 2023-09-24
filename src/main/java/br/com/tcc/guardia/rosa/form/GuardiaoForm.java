@@ -1,4 +1,4 @@
-package br.com.tcc.guardia.rosa.dto;
+package br.com.tcc.guardia.rosa.form;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;

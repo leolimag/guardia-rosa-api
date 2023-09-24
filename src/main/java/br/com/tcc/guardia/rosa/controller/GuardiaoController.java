@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,23 +23,19 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.tcc.guardia.rosa.business.GuardiaoBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.dto.GuardiaoDTO;
-import br.com.tcc.guardia.rosa.dto.GuardiaoForm;
-import br.com.tcc.guardia.rosa.dto.UpdateGuardiaoForm;
+import br.com.tcc.guardia.rosa.form.GuardiaoForm;
+import br.com.tcc.guardia.rosa.form.UpdateGuardiaoForm;
 import br.com.tcc.guardia.rosa.model.Guardiao;
 
-
-@CrossOrigin
 @RestController
 @RequestMapping("/api/guardiao")
 public class GuardiaoController {
 	
 	private final GuardiaoBusiness business; 
-	private final UsuarioBusiness usuarioBusiness; 
 
 	@Autowired
 	public GuardiaoController(GuardiaoBusiness business, UsuarioBusiness usuarioBusiness) {
 		this.business = business;
-		this.usuarioBusiness = usuarioBusiness;
 	}
 	
 	@GetMapping("/{id}")
@@ -54,8 +49,7 @@ public class GuardiaoController {
 	
 	@PostMapping
 	public ResponseEntity<GuardiaoDTO> addGuardiao(@RequestBody @Valid GuardiaoForm guardiaoForm, UriComponentsBuilder uriBuilder) {
-		Guardiao guardiao = guardiaoForm.toGuardiao(usuarioBusiness);
-		business.addGuardiao(guardiao);
+		Guardiao guardiao = business.addGuardiao(guardiaoForm);
 		URI uri = uriBuilder.path("/api/guardiao/{id}").buildAndExpand(guardiao.getId()).toUri();
 		
 		return ResponseEntity.created(uri).body(new GuardiaoDTO(guardiao));
