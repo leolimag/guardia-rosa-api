@@ -1,10 +1,9 @@
 package br.com.tcc.guardia.rosa.business;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.tcc.guardia.rosa.form.GuardiaoForm;
@@ -20,8 +19,8 @@ public class GuardiaoBusiness {
 	@Autowired
 	private UsuarioBusiness usuarioBusiness;
 	
-	public Page<Guardiao> getGuardioesByUsuario(Long id, Pageable pageable) {	
-		Page<Guardiao> guardioes = repository.findByUsuarioId(id, pageable);
+	public List<Guardiao> getGuardioesByUsuario(Long id) {	
+		List<Guardiao> guardioes = repository.findByUsuarioId(id);
 		return guardioes;
 	}
 	

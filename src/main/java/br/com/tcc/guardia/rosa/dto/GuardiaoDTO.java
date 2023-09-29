@@ -1,6 +1,7 @@
 package br.com.tcc.guardia.rosa.dto;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import br.com.tcc.guardia.rosa.model.Guardiao;
 import br.com.tcc.guardia.rosa.model.Usuario;
@@ -56,8 +57,10 @@ public class GuardiaoDTO {
 		this.usuario = usuario;
 	}
 	
-	public static Page<GuardiaoDTO> toGuardioesDTO(Page<Guardiao> guardioes) {
-		return guardioes.map(GuardiaoDTO::new);
+	public static List<GuardiaoDTO> toGuardioesDTO(List<Guardiao> guardioes) {
+	    return guardioes.stream()
+	            .map(GuardiaoDTO::new)
+	            .collect(Collectors.toList());
 	}
 
 }

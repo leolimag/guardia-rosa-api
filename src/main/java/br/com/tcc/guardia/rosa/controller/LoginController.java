@@ -33,25 +33,25 @@ public class LoginController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginDTO login) {
-		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(login.getLogin(), login.getPassword());
+		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
 		Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 		String token = tokenService.generateToken(auth);
 		Usuario usuario = (Usuario) auth.getPrincipal();
 		
-		return ResponseEntity.ok(new LoginResponseDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getTelefone(), token)); 
+		return ResponseEntity.ok(new LoginResponseDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), token, usuario.getCpf())); 
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<Usuario> register(@RequestBody @Valid RegisterDTO register) {
+	public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO register) {
 		if (repository.findByEmail(register.getEmail()) != null) {
 			return ResponseEntity.badRequest().build();
 		}
 		
 		String encryptedPassword = new BCryptPasswordEncoder().encode(register.getPassword());
-		Usuario usuario = new Usuario(register.getName(), register.getEmail(), encryptedPassword, register.getPassword());
+		Usuario usuario = new Usuario(register.getName(), register.getEmail(), encryptedPassword, register.getCpf());
 		repository.save(usuario);
 		
-		return ResponseEntity.ok(usuario);
+		return ResponseEntity.ok().build();
 	}
 	
 }

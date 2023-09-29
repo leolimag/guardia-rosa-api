@@ -22,16 +22,16 @@ public class SecurityConfiguration {
 	private SecurityFilter securityFilter;
 	
 	@Bean
-	public SecurityFilterChain configureSecurity(HttpSecurity httpSecurity) throws Exception {
-		return httpSecurity
-				.csrf().disable()
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(authorize -> authorize
-						.antMatchers(HttpMethod.POST,  "/api/auth/register").permitAll()
-						.antMatchers(HttpMethod.POST,  "/api/auth/login").permitAll()
-						.anyRequest().authenticated())
-						.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-				.build();
+	public SecurityFilterChain configureSecurity(HttpSecurity http) throws Exception {
+		return 
+			 http.authorizeRequests()
+			    .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+			    .anyRequest().authenticated()
+			    .and().cors()
+			    .and().csrf().disable()
+			    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			    .and().addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+			    .build();
 	}
 	
 	@Bean

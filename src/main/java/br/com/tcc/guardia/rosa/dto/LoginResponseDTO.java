@@ -5,15 +5,15 @@ public class LoginResponseDTO {
 	private Long id;
 	private String name;
 	private String email;
-	private String telefone;
 	private String token;
+	private String cpf;
 	
-	public LoginResponseDTO(Long id, String name, String email, String telefone, String token) {
+	public LoginResponseDTO(Long id, String name, String email,  String token, String cpf) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.token = token;
-		this.telefone = telefone;
+		this.cpf = cpf;
 	}
 	public Long getId() {
 		return id;
@@ -39,11 +39,11 @@ public class LoginResponseDTO {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	public String getTelefone() {
-		return telefone;
+	public String getCpf() {
+		return cpf;
 	}
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 	
 }

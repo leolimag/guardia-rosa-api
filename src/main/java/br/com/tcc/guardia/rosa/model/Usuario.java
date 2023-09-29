@@ -30,8 +30,8 @@ public class Usuario implements UserDetails {
 	private String email;
 	@	NotNull @NotBlank @Length(min = 5)
 	private String senha;
-	@	NotNull @NotBlank
-	private String telefone;
+	@	NotNull @NotBlank @Length(max = 11)
+	private String cpf;
 	
 	public Usuario() {
 	
@@ -42,11 +42,11 @@ public class Usuario implements UserDetails {
 	}
 	
 	public Usuario(@NotNull @NotBlank String nome, @NotNull @NotBlank String email,
-			@NotNull @NotBlank @Length(min = 5) String senha, @NotNull @NotBlank String telefone) {
+			@NotNull @NotBlank @Length(min = 5) String senha, @NotNull @NotBlank @Length(max = 11) String cpf) {
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
-		this.telefone = telefone;
+		this.cpf = cpf;
 	}
 
 	public Long getId() {
@@ -73,11 +73,12 @@ public class Usuario implements UserDetails {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
-	public String getTelefone() {
-		return telefone;
+	public String getCpf() {
+		return cpf;
 	}
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 
 	@Override
