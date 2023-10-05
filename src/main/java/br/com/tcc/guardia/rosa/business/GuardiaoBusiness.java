@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import br.com.tcc.guardia.rosa.form.GuardiaoForm;
 import br.com.tcc.guardia.rosa.form.UpdateGuardiaoForm;
 import br.com.tcc.guardia.rosa.model.Guardiao;
+import br.com.tcc.guardia.rosa.model.Usuario;
 import br.com.tcc.guardia.rosa.repository.GuardiaoRepository;
 
 @Service
@@ -44,6 +45,25 @@ public class GuardiaoBusiness {
 			repository.save(guardiao);
 		}
 		return guardiao;
+	}
+	
+	public void updateGuardiaoFavorito(Long id, Long usuarioId) throws RuntimeException {
+		Optional<Usuario> usuarioOpt = usuarioBusiness.findById(usuarioId);
+		Usuario usuario = null;
+		
+		if (!usuarioOpt.isPresent()) {
+			throw new RuntimeException("Esse usuário não existe!");
+		}
+		
+		usuario = usuarioOpt.get();
+		
+		if (repository.existsGuardiaoFavoritoByUsuario(usuario)) {
+			Long guardiaoFavoritoId = repository.getGuardiaoFavoritoByUsuario(usuario).getId();
+			repository.updateGuardiaoFavorito(guardiaoFavoritoId, false);
+			repository.updateGuardiaoFavorito(id, true);
+		} else {
+			repository.updateGuardiaoFavorito(id, true);
+		}
 	}
 	
 	public Optional<Guardiao> findById(Long id) {

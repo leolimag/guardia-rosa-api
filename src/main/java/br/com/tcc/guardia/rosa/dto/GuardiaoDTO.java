@@ -13,6 +13,7 @@ public class GuardiaoDTO {
 	private String email;
 	private String telefone;
 	private Usuario usuario;
+	private Boolean favorito;
 	
 	public GuardiaoDTO() {
 		
@@ -25,6 +26,7 @@ public class GuardiaoDTO {
 		this.email = guardiao.getEmail();
 		this.telefone = guardiao.getTelefone();
 		this.usuario = guardiao.getUsuario();
+		this.favorito = guardiao.isFavorito();
 	}
 	public Long getId() {
 		return id;
@@ -56,7 +58,14 @@ public class GuardiaoDTO {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	
+	public Boolean getFavorito() {
+		return favorito;
+	}
+
+	public void setFavorito(Boolean favorito) {
+		this.favorito = favorito;
+	}
+
 	public static List<GuardiaoDTO> toGuardioesDTO(List<Guardiao> guardioes) {
 	    return guardioes.stream()
 	            .map(GuardiaoDTO::new)

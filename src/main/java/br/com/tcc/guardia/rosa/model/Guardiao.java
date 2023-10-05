@@ -19,6 +19,7 @@ public class Guardiao {
 	private String telefone;
 	@ManyToOne
 	private Usuario usuario;
+	private Boolean favorito;
 	
 	public Guardiao() {
 		
@@ -60,6 +61,13 @@ public class Guardiao {
 	}
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+	public boolean isFavorito() {
+		return favorito;
+	}
+
+	public void setFavorito(boolean favorito) {
+		this.favorito = favorito;
 	}
 
 }
