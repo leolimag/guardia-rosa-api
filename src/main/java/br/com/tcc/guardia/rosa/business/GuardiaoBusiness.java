@@ -27,6 +27,7 @@ public class GuardiaoBusiness {
 	
 	public Guardiao addGuardiao(GuardiaoForm guardiaoForm) {
 		Guardiao guardiao = guardiaoForm.toGuardiao(usuarioBusiness);
+		guardiao.setFavorito(false);
 		repository.save(guardiao);
 		
 		return guardiao;
@@ -36,8 +37,8 @@ public class GuardiaoBusiness {
 		repository.deleteById(id);
 	}
 	
-	public Guardiao updateGuardiao(Long id, UpdateGuardiaoForm guardiaoForm) {
-		Guardiao guardiao = findById(id).get();
+	public Guardiao updateGuardiao(UpdateGuardiaoForm guardiaoForm) {
+		Guardiao guardiao = findById(guardiaoForm.getId()).get();
 		if (guardiao != null) {
 			guardiao.setEmail(guardiaoForm.getEmail());
 			guardiao.setNome(guardiaoForm.getNome());
