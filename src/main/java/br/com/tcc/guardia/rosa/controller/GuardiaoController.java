@@ -59,7 +59,11 @@ public class GuardiaoController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<GuardiaoDTO> addGuardiao(@RequestBody @Valid GuardiaoForm guardiaoForm, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<?> addGuardiao(@RequestBody @Valid GuardiaoForm guardiaoForm, UriComponentsBuilder uriBuilder) {
+		if (business.getGuardioesByUsuario(guardiaoForm.getUsuarioId()).size() >= 10) {
+			 return ResponseEntity.badRequest().body(new Error("Você pode adicionar somente até 10 guardiões! "));
+		}
+		
 		Guardiao guardiao = business.addGuardiao(guardiaoForm);
 		URI uri = uriBuilder.path("/api/guardiao/{id}").buildAndExpand(guardiao.getId()).toUri();
 		
