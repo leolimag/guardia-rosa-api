@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,6 +44,20 @@ public class GuardiaoController {
 		return guardioesDTO;
 	}
 	
+	@GetMapping("/to-edit/{id}")
+	public ResponseEntity<GuardiaoDTO> getGuardiaoById(@PathVariable Long id) {
+		Guardiao guardiao = null;
+		GuardiaoDTO guardiaoDto = null;
+		
+		if (business.findById(id) != null) {
+			guardiao = business.findById(id).get();
+			guardiaoDto = new GuardiaoDTO(guardiao);
+			return ResponseEntity.ok(guardiaoDto);
+		}
+		
+		return ResponseEntity.notFound().build(); 
+	}
+	
 	@PostMapping
 	public ResponseEntity<GuardiaoDTO> addGuardiao(@RequestBody @Valid GuardiaoForm guardiaoForm, UriComponentsBuilder uriBuilder) {
 		Guardiao guardiao = business.addGuardiao(guardiaoForm);
@@ -60,7 +75,7 @@ public class GuardiaoController {
 		return ResponseEntity.notFound().build();
 	}
 	
-	@PutMapping("/favorite")
+	@PatchMapping("/favorite")
 	public ResponseEntity<GuardiaoDTO> updateGuardiaoFavorito(@RequestBody @Valid FavoriteGuardiaoForm favoriteGuardiaoForm) {
 		if (business.findById(favoriteGuardiaoForm.getId()) != null) {	
 			try {
