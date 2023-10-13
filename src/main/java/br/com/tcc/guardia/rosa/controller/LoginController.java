@@ -78,7 +78,7 @@ public class LoginController {
 	public ResponseEntity<?>  resetPassword(@RequestBody @Valid ResetPasswordDTO resetPassword) throws UserNotFoundException {
 		Optional<Usuario> usuarioOpt = business.findUserByEmail(resetPassword.getEmail());
 		if (!usuarioOpt.isPresent()) {
-			throw new UserNotFoundException("Este usuário não existe");
+			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
 		}
         Random random = new Random();
         int codigoDeVerificacao = random.nextInt(1000000);
@@ -95,7 +95,7 @@ public class LoginController {
 	public ResponseEntity<?> validateResetPassword(@RequestBody @Valid ResetPasswordDTO resetPassword) throws UserNotFoundException {
 		Optional<Usuario> usuarioOpt = business.findUserByEmail(resetPassword.getEmail());
 		if (!usuarioOpt.isPresent()) {
-			throw new UserNotFoundException("Este usuário não existe");
+			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
 		}
 		
 		Usuario usuario = usuarioOpt.get();
