@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.tcc.guardia.rosa.business.ResetSenhaBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
+import br.com.tcc.guardia.rosa.dto.ForgetPasswordDTO;
 import br.com.tcc.guardia.rosa.dto.LoginDTO;
 import br.com.tcc.guardia.rosa.dto.LoginResponseDTO;
 import br.com.tcc.guardia.rosa.dto.RegisterDTO;
@@ -74,26 +76,27 @@ public class LoginController {
 		return ResponseEntity.ok().build();
 	}
 	
-	@PostMapping("/reset-password")
-	public ResponseEntity<?>  resetPassword(@RequestBody @Valid ResetPasswordDTO resetPassword) throws UserNotFoundException {
+	@PostMapping("/forget-password")
+	public ResponseEntity<?>  forgetPassword(@RequestBody @Valid ForgetPasswordDTO resetPassword) throws UserNotFoundException {
 		Optional<Usuario> usuarioOpt = business.findUserByEmail(resetPassword.getEmail());
 		if (!usuarioOpt.isPresent()) {
 			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
 		}
         Random random = new Random();
         int codigoDeVerificacao = random.nextInt(1000000);
+        String codigoFormatado = String.format("%06d", codigoDeVerificacao);
         
 		Usuario usuario = usuarioOpt.get();
-		resetBusiness.saveResetSenha(usuario, codigoDeVerificacao);
+		resetBusiness.saveResetSenha(usuario, Integer.parseInt(codigoFormatado));
 
-		mailSender.send(sendEmail(usuario, codigoDeVerificacao));
+		mailSender.send(sendEmail(usuario, Integer.parseInt(codigoFormatado)));
 		
 		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/validate-reset-password")
-	public ResponseEntity<?> validateResetPassword(@RequestBody @Valid ResetPasswordDTO resetPassword) throws UserNotFoundException {
-		Optional<Usuario> usuarioOpt = business.findUserByEmail(resetPassword.getEmail());
+	public ResponseEntity<?> validateResetPassword(@RequestBody @Valid ForgetPasswordDTO forgetPassword) throws UserNotFoundException {
+		Optional<Usuario> usuarioOpt = business.findUserByEmail(forgetPassword.getEmail());
 		if (!usuarioOpt.isPresent()) {
 			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
 		}
@@ -106,7 +109,7 @@ public class LoginController {
 		}
 		
 		try {
-			 if (resetBusiness.validateCode(resetSenha, resetPassword.getCodigoDeVerificacao())) {
+			 if (resetBusiness.validateCode(resetSenha, forgetPassword.getCodigoDeVerificacao())) {
 				 return ResponseEntity.ok().build();
 			 }
 		} catch (ExpirationCodeException | InvalidCodeException e) {
@@ -121,10 +124,24 @@ public class LoginController {
 	private SimpleMailMessage sendEmail(Usuario usuario, int codigoDeVerificacao) {
 	    SimpleMailMessage email = new SimpleMailMessage();
 	    email.setSubject("Redenifição de Senha");
-	    email.setText("O código de verificação para a recuperação da sua senha é: \n\n" + codigoDeVerificacao + "\nInsira esse código no AbraçoRosa para realizar a troca da senha.") ;
+	    email.setText("O código de verificação para a recuperação da sua senha é: \n\n" + codigoDeVerificacao + "\n\nInsira esse código no AbraçoRosa para realizar a troca da senha.") ;
 	    email.setTo(usuario.getEmail());
 	    email.setFrom("abracorosa.tcc@gmail.com"); 
 	    return email;
+	}
+	
+	@PatchMapping("/reset-password")
+	public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordDTO resetPassword) throws UserNotFoundException {
+		Optional<Usuario> usuarioOpt = business.findUserByEmail(resetPassword.getEmail());
+		if (!usuarioOpt.isPresent()) {
+			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
+		}
+		
+		Usuario usuario = usuarioOpt.get();
+		String encryptedPassword = new BCryptPasswordEncoder().encode(resetPassword.getSenha());
+		usuario.setSenha(encryptedPassword);
+		business.save(usuario);
+		return ResponseEntity.ok("Senha alterada com sucesso!");
 	}
 	
 }

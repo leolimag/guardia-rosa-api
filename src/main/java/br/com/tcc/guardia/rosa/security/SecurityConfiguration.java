@@ -26,6 +26,7 @@ public class SecurityConfiguration {
 		return 
 			 http.authorizeRequests()
 			    .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+			    .antMatchers(HttpMethod.PATCH, "/api/auth/**").permitAll()
 			    .anyRequest().authenticated()
 			    .and().cors()
 			    .and().csrf().disable()

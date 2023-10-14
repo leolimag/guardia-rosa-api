@@ -1,9 +1,18 @@
 package br.com.tcc.guardia.rosa.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 public class ResetPasswordDTO {
 	
+	@Email(message = "Please provide a valid email address")  @NotNull @NotBlank @NotEmpty
 	private String email;
-	private Integer codigoDeVerificacao;
+	@NotNull @NotBlank @NotEmpty @Length(min = 5)
+	private String senha;
 	
 	public String getEmail() {
 		return email;
@@ -13,12 +22,12 @@ public class ResetPasswordDTO {
 		this.email = email;
 	}
 
-	public Integer getCodigoDeVerificacao() {
-		return codigoDeVerificacao;
+	public String getSenha() {
+		return senha;
 	}
 
-	public void setCodigoDeVerificacao(Integer codigoDeVerificacao) {
-		this.codigoDeVerificacao = codigoDeVerificacao;
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 	
 }
