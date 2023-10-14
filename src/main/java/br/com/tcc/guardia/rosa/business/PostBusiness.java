@@ -55,7 +55,6 @@ public class PostBusiness {
 		Post post = findById(id).get();
 		if (post != null) {
 			post.setConteudo(postForm.getConteudo());
-			post.setTitulo(postForm.getConteudo());
 			repository.save(post);
 			return post;
 		}

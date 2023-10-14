@@ -47,6 +47,7 @@ public class PostController {
 		Page<Post> posts = business.getAllPosts(pageable);
 		Page<PostDTO> postsDTO = PostDTO.toPostsDTO(posts);
 		
+		postsDTO.toList().forEach(p -> System.out.println(p.getConteudo()));
 		return postsDTO;
 	}
 	
@@ -71,7 +72,7 @@ public class PostController {
 	@PostMapping
 	public ResponseEntity<PostDTO> addPost(@RequestBody @Valid PostForm postForm, UriComponentsBuilder uriBuilder) {
 		Post post = business.addPost(postForm);
-		URI uri = uriBuilder.path("/api/post/{id}").buildAndExpand(post.getId()).toUri();
+		URI uri = uriBuilder.path("/api/posts/{id}").buildAndExpand(post.getId()).toUri();
 		
 		return ResponseEntity.created(uri).body(new PostDTO(post));
 	}

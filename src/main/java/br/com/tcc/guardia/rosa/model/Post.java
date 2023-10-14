@@ -1,6 +1,6 @@
 package br.com.tcc.guardia.rosa.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,29 +21,25 @@ public class Post {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@	NotNull @NotBlank
-	private String titulo;
-	@	NotNull @NotBlank
 	private String conteudo;
 	private Long curtidas;
 	@ManyToOne
 	private Usuario usuario;
-	private LocalDate dataCriacao;
+	private LocalDateTime dataCriacao;
 	
 	public Post() {}
 	
-	public Post(Long id, @NotNull @NotBlank String titulo, @NotNull @NotBlank String conteudo, Long curtidas,
-			@NotNull @NotBlank Usuario usuario, @NotNull @NotBlank LocalDate dataCriacao) {
+	public Post(Long id, @NotNull @NotBlank String conteudo, Long curtidas,
+			@NotNull @NotBlank Usuario usuario, @NotNull @NotBlank LocalDateTime dataCriacao) {
 		this.id = id;
-		this.titulo = titulo;
 		this.conteudo = conteudo;
 		this.curtidas = curtidas;
 		this.usuario = usuario;
 		this.dataCriacao = dataCriacao;
 	}
 	
-	public Post(@NotNull @NotBlank String titulo, @NotNull @NotBlank String conteudo,
-			@NotNull @NotBlank Usuario usuario, @NotNull @NotBlank LocalDate dataCriacao) {
-		this.titulo = titulo;
+	public Post( @NotNull @NotBlank String conteudo,
+			@NotNull @NotBlank Usuario usuario, @NotNull @NotBlank LocalDateTime dataCriacao) {
 		this.conteudo = conteudo;
 		this.usuario = usuario;
 		this.dataCriacao = dataCriacao;
@@ -54,12 +50,6 @@ public class Post {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public String getTitulo() {
-		return titulo;
-	}
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
 	}
 	public String getConteudo() {
 		return conteudo;
@@ -79,10 +69,10 @@ public class Post {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	public LocalDate getDataCriacao() {
+	public LocalDateTime getDataCriacao() {
 		return dataCriacao;
 	}
-	public void setDataCriacao(LocalDate dataCriacao) {
+	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
 

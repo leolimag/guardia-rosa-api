@@ -118,9 +118,7 @@ public class LoginController {
 		
 		return ResponseEntity.notFound().build();
 	}
-
 	
-	//melhorar layout do email
 	private SimpleMailMessage sendEmail(Usuario usuario, int codigoDeVerificacao) {
 	    SimpleMailMessage email = new SimpleMailMessage();
 	    email.setSubject("Redenifição de Senha");

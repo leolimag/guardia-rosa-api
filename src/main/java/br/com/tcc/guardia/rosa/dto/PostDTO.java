@@ -1,6 +1,6 @@
 package br.com.tcc.guardia.rosa.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 
@@ -10,17 +10,15 @@ import br.com.tcc.guardia.rosa.model.Usuario;
 public class PostDTO {
 	
 	private Long id;
-	private String titulo;
 	private String conteudo;
 	private Long curtidas;
 	private Usuario usuario;
-	private LocalDate dataCriacao;
+	private LocalDateTime dataCriacao;
 	
 	public PostDTO() {}
 	
 	public PostDTO(Post post) {
 		this.id = post.getId();
-		this.titulo = post.getTitulo();
 		this.conteudo = post.getConteudo();
 		this.curtidas = post.getCurtidas();
 		this.usuario = post.getUsuario();
@@ -32,12 +30,6 @@ public class PostDTO {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public String getTitulo() {
-		return titulo;
-	}
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
 	}
 	public String getConteudo() {
 		return conteudo;
@@ -57,10 +49,10 @@ public class PostDTO {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-	public LocalDate getDataCriacao() {
+	public LocalDateTime getDataCriacao() {
 		return dataCriacao;
 	}
-	public void setDataCriacao(LocalDate dataCriacao) {
+	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
 	public static Page<PostDTO> toPostsDTO(Page<Post> posts) {
