@@ -13,7 +13,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,9 +81,8 @@ public class LoginController {
 	@PostMapping("/forget-password")
 	public ResponseEntity<?>  forgetPassword(@RequestBody @Valid ForgetPasswordDTO resetPassword) throws UserNotFoundException {
 		Optional<Usuario> usuarioOpt = business.findUserByEmail(resetPassword.getEmail());
-		if (!usuarioOpt.isPresent()) {
-			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
-		}
+		validateUser(usuarioOpt);
+		
         Random random = new Random();
         int codigoDeVerificacao = random.nextInt(1000000);
         String codigoFormatado = String.format("%06d", codigoDeVerificacao);
@@ -97,9 +98,7 @@ public class LoginController {
 	@PostMapping("/validate-reset-password")
 	public ResponseEntity<?> validateResetPassword(@RequestBody @Valid ForgetPasswordDTO forgetPassword) throws UserNotFoundException {
 		Optional<Usuario> usuarioOpt = business.findUserByEmail(forgetPassword.getEmail());
-		if (!usuarioOpt.isPresent()) {
-			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
-		}
+		validateUser(usuarioOpt);
 		
 		Usuario usuario = usuarioOpt.get();
 		ResetSenha resetSenha = resetBusiness.findFirstByUsuarioOrderByDataExpiracaoDesc(usuario);
@@ -131,15 +130,28 @@ public class LoginController {
 	@PatchMapping("/reset-password")
 	public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordDTO resetPassword) throws UserNotFoundException {
 		Optional<Usuario> usuarioOpt = business.findUserByEmail(resetPassword.getEmail());
-		if (!usuarioOpt.isPresent()) {
-			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
-		}
+		validateUser(usuarioOpt);
 		
 		Usuario usuario = usuarioOpt.get();
 		String encryptedPassword = new BCryptPasswordEncoder().encode(resetPassword.getSenha());
 		usuario.setSenha(encryptedPassword);
 		business.save(usuario);
 		return ResponseEntity.ok("Senha alterada com sucesso!");
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+		Optional<Usuario> usuarioOpt = business.findById(id);
+		validateUser(usuarioOpt);
+		business.delete(usuarioOpt.get());
+		return ResponseEntity.ok().build();
+	}
+	
+	private ResponseEntity<?> validateUser(Optional<Usuario> usuario) {
+		if (!usuario.isPresent()) {
+			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
+		}
+		return null;
 	}
 	
 }

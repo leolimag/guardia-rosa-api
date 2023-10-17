@@ -30,5 +30,9 @@ public class UsuarioBusiness {
 	public void save(Usuario usuario) {
 		repository.save(usuario);
 	}
+	
+	public void delete(Usuario usuario) {
+		repository.delete(usuario);
+	}
 
 }

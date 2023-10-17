@@ -47,7 +47,6 @@ public class PostController {
 		Page<Post> posts = business.getAllPosts(pageable);
 		Page<PostDTO> postsDTO = PostDTO.toPostsDTO(posts);
 		
-		postsDTO.toList().forEach(p -> System.out.println(p.getConteudo()));
 		return postsDTO;
 	}
 	
