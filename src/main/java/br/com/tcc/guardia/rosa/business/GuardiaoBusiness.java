@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.tcc.guardia.rosa.exception.GuardianNotFoundException;
+import br.com.tcc.guardia.rosa.exception.UserNotFoundException;
 import br.com.tcc.guardia.rosa.form.GuardiaoForm;
 import br.com.tcc.guardia.rosa.form.UpdateGuardiaoForm;
 import br.com.tcc.guardia.rosa.model.Guardiao;
@@ -74,5 +76,29 @@ public class GuardiaoBusiness {
 		}
 		return null;
 	}
+	
+public Guardiao findFavoriteByUser(Long id) throws GuardianNotFoundException, UserNotFoundException {
+	Optional<Usuario> usuarioOpt = usuarioBusiness.findById(id);
+	Usuario usuario = null;
+	
+	if (usuarioOpt.isPresent()) {
+		usuario = usuarioOpt.get();
+	} else {
+		throw new UserNotFoundException("Usuário não encontrado");
+	}
+	
+	Optional<Guardiao> guardiao = repository.findByFavoritoAndUsuario(true, usuario);
+	if (guardiao.isPresent()) {
+		return guardiao.get();
+	} else {
+		Optional<Guardiao> guardiaoOpt = repository.findFirstByUsuario(usuario);
+		if (guardiaoOpt.isPresent()) {
+			return guardiaoOpt.get();
+		} else {
+			throw new GuardianNotFoundException("Você ainda não possui nenhum guardião!");
+		}
+	}
+	
+}
 	
 }

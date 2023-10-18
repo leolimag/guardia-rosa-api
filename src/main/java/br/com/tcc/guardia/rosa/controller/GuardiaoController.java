@@ -20,6 +20,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.tcc.guardia.rosa.business.GuardiaoBusiness;
 import br.com.tcc.guardia.rosa.dto.GuardiaoDTO;
+import br.com.tcc.guardia.rosa.exception.GuardianNotFoundException;
+import br.com.tcc.guardia.rosa.exception.UserNotFoundException;
 import br.com.tcc.guardia.rosa.form.FavoriteGuardiaoForm;
 import br.com.tcc.guardia.rosa.form.GuardiaoForm;
 import br.com.tcc.guardia.rosa.form.UpdateGuardiaoForm;
@@ -56,6 +58,16 @@ public class GuardiaoController {
 		}
 		
 		return ResponseEntity.notFound().build(); 
+	}
+	
+	@GetMapping("/favorite/{id}")
+	public ResponseEntity<?> getFavoriteGuardianByUser(@PathVariable Long id) {
+		try {
+			Guardiao guardiao = business.findFavoriteByUser(id);
+			return ResponseEntity.ok(guardiao);
+		} catch (GuardianNotFoundException | UserNotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@PostMapping

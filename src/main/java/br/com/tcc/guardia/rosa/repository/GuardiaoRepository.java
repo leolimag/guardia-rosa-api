@@ -1,6 +1,7 @@
 package br.com.tcc.guardia.rosa.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -26,5 +27,8 @@ public interface GuardiaoRepository extends JpaRepository<Guardiao, Long> {
     
     @Query("SELECT g FROM Guardiao g WHERE g.usuario = :usuario AND g.favorito = true")
     Guardiao getGuardiaoFavoritoByUsuario(@Param("usuario") Usuario usuario);
-
+    
+    Optional<Guardiao> findByFavoritoAndUsuario(boolean isFavorito, Usuario usuario);
+    Optional<Guardiao> findFirstByUsuario(Usuario usuario);
+    
 }
