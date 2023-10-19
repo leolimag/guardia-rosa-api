@@ -98,7 +98,11 @@ public class LoginController {
 	@PostMapping("/validate-reset-password")
 	public ResponseEntity<?> validateResetPassword(@RequestBody @Valid ForgetPasswordDTO forgetPassword) throws UserNotFoundException {
 		Optional<Usuario> usuarioOpt = business.findUserByEmail(forgetPassword.getEmail());
-		validateUser(usuarioOpt);
+		try {
+			validateUser(usuarioOpt);
+		} catch (UserNotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 		
 		Usuario usuario = usuarioOpt.get();
 		ResetSenha resetSenha = resetBusiness.findFirstByUsuarioOrderByDataExpiracaoDesc(usuario);
@@ -130,7 +134,11 @@ public class LoginController {
 	@PatchMapping("/reset-password")
 	public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordDTO resetPassword) throws UserNotFoundException {
 		Optional<Usuario> usuarioOpt = business.findUserByEmail(resetPassword.getEmail());
-		validateUser(usuarioOpt);
+		try {
+			validateUser(usuarioOpt);
+		} catch (UserNotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 		
 		Usuario usuario = usuarioOpt.get();
 		String encryptedPassword = new BCryptPasswordEncoder().encode(resetPassword.getSenha());
@@ -142,14 +150,18 @@ public class LoginController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteUser(@PathVariable Long id) {
 		Optional<Usuario> usuarioOpt = business.findById(id);
-		validateUser(usuarioOpt);
+		try {
+			validateUser(usuarioOpt);
+		} catch (UserNotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 		business.delete(usuarioOpt.get());
 		return ResponseEntity.ok().build();
 	}
 	
-	private ResponseEntity<?> validateUser(Optional<Usuario> usuario) {
+	private ResponseEntity<?> validateUser(Optional<Usuario> usuario) throws UserNotFoundException {
 		if (!usuario.isPresent()) {
-			return ResponseEntity.badRequest().body("Este e-mail não foi registrado.");
+			throw new UserNotFoundException("Este usuário não existe.");
 		}
 		return null;
 	}

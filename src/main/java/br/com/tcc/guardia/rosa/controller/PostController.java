@@ -1,6 +1,7 @@
 package br.com.tcc.guardia.rosa.controller;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -19,26 +20,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.tcc.guardia.rosa.business.ComentarioBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
-import br.com.tcc.guardia.rosa.dto.ComentarioDTO;
+import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.dto.PostDTO;
+import br.com.tcc.guardia.rosa.exception.UserNotFoundException;
 import br.com.tcc.guardia.rosa.form.PostForm;
 import br.com.tcc.guardia.rosa.form.UpdatePostForm;
-import br.com.tcc.guardia.rosa.model.Comentario;
 import br.com.tcc.guardia.rosa.model.Post;
+import br.com.tcc.guardia.rosa.model.Usuario;
 
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
 	
 	private final PostBusiness business;
-	private final ComentarioBusiness comentarioBusiness;
-	
+	private final UsuarioBusiness usuarioBusiness; 
+
 	@Autowired
-	public PostController(PostBusiness business, ComentarioBusiness comentarioBusiness) {
+	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness) {
 		this.business = business;
-		this.comentarioBusiness = comentarioBusiness;
+		this.usuarioBusiness = usuarioBusiness;
 	}
 	
 	@GetMapping
@@ -59,17 +60,13 @@ public class PostController {
 		return postsDTO;
 	}
 	
-	@GetMapping("comments/{id}")
-	public Page<ComentarioDTO> getCommentsByPost(@RequestParam(required = false) Integer quantity, @RequestParam Integer page, @PathVariable Long id) {
-		Pageable pageable 	= PageRequest.of(page, quantity);
-		Page<Comentario> comentarios = comentarioBusiness.getCommentsByPost(id, pageable);
-		Page<ComentarioDTO> comentariosDTO = ComentarioDTO.toComentarioDTO(comentarios);
-		
-		return comentariosDTO;
-	}
-	
 	@PostMapping
-	public ResponseEntity<PostDTO> addPost(@RequestBody @Valid PostForm postForm, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<?> addPost(@RequestBody @Valid PostForm postForm, UriComponentsBuilder uriBuilder) {
+		try {
+			validateUser(postForm.getUsuarioId());
+		} catch (UserNotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 		Post post = business.addPost(postForm);
 		URI uri = uriBuilder.path("/api/posts/{id}").buildAndExpand(post.getId()).toUri();
 		
@@ -83,6 +80,15 @@ public class PostController {
 			return ResponseEntity.ok(new PostDTO(post));
 		}
 		return ResponseEntity.notFound().build();
+	}
+	
+	private ResponseEntity<?> validateUser(Long id) throws UserNotFoundException {
+		Optional<Usuario> usuario = usuarioBusiness.findById(id);
+		
+		if (!usuario.isPresent()) {
+			throw new UserNotFoundException("Este usuário não existe.");
+		}
+		return null;
 	}
 
 }

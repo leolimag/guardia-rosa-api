@@ -22,7 +22,7 @@ public class Post {
 	private Long id;
 	@	NotNull @NotBlank
 	private String conteudo;
-	private Long curtidas;
+	private Long curtidas = 0l;
 	@ManyToOne
 	private Usuario usuario;
 	private LocalDateTime dataCriacao;
