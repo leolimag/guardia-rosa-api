@@ -20,12 +20,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.tcc.guardia.rosa.business.ComentarioBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.dto.PostDTO;
+import br.com.tcc.guardia.rosa.dto.PostSelectedDTO;
+import br.com.tcc.guardia.rosa.exception.PostNotFoundException;
 import br.com.tcc.guardia.rosa.exception.UserNotFoundException;
 import br.com.tcc.guardia.rosa.form.PostForm;
 import br.com.tcc.guardia.rosa.form.UpdatePostForm;
+import br.com.tcc.guardia.rosa.model.Comentario;
 import br.com.tcc.guardia.rosa.model.Post;
 import br.com.tcc.guardia.rosa.model.Usuario;
 
@@ -35,11 +39,13 @@ public class PostController {
 	
 	private final PostBusiness business;
 	private final UsuarioBusiness usuarioBusiness; 
+	private final ComentarioBusiness comentarioBusiness;
 
 	@Autowired
-	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness) {
+	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness, ComentarioBusiness comentarioBusiness) {
 		this.business = business;
 		this.usuarioBusiness = usuarioBusiness;
+		this.comentarioBusiness = comentarioBusiness;
 	}
 	
 	@GetMapping
@@ -49,6 +55,21 @@ public class PostController {
 		Page<PostDTO> postsDTO = PostDTO.toPostsDTO(posts);
 		
 		return postsDTO;
+	}
+	
+	@GetMapping("/selected/{id}")
+	public PostSelectedDTO getPostById(@PathVariable Long id) throws PostNotFoundException {
+		Post post = business.findById(id);
+		if (post == null) {
+			throw new PostNotFoundException("Post não encontrado");
+		}
+		
+		Pageable pageable 	= PageRequest.of(0, 10);
+		Page<Comentario> comentarios = comentarioBusiness.getCommentsByPost(id, pageable);
+		PostSelectedDTO postSelected = new PostSelectedDTO(post);
+		postSelected.setComentarios(comentarios);
+	
+		return postSelected;
 	}
 	
 	@GetMapping("/{id}")

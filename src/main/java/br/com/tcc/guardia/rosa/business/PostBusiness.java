@@ -42,17 +42,17 @@ public class PostBusiness {
 		return repository.findAllByOrderByIdDesc(pageable);
 	}
 	
-	public Optional<Post> findById(Long id) {
+	public Post findById(Long id) {
 		Optional<Post> post = repository.findById(id);
 		if (post.isPresent()) {
-			return post;
+			return post.get();
 		}
 		
 		return null;
 	}
 
 	public Post updatePost(Long id, @Valid UpdatePostForm postForm) {
-		Post post = findById(id).get();
+		Post post = findById(id);
 		if (post != null) {
 			post.setConteudo(postForm.getConteudo());
 			repository.save(post);

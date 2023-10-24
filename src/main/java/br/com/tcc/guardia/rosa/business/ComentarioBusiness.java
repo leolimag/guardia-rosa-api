@@ -1,7 +1,5 @@
 package br.com.tcc.guardia.rosa.business;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +17,9 @@ public class ComentarioBusiness {
 	private PostBusiness postBusiness;
 
 	public Page<Comentario> getCommentsByPost(Long id, Pageable pageable) {
-		Optional<Post> post = postBusiness.findById(id);
-		if (post.isPresent()) {
-			return repository.findByPost(post.get(), pageable);
+		Post post = postBusiness.findById(id);
+		if (post != null) {
+			return repository.findByPost(post, pageable);
 		}
 		
 		return null;
