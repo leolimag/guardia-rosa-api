@@ -1,6 +1,8 @@
 package br.com.tcc.guardia.rosa.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.springframework.data.domain.Page;
 
@@ -15,16 +17,20 @@ public class PostSelectedDTO {
 	private Long curtidas;
 	private Usuario usuario;
 	private LocalDateTime dataCriacao;
-	private Page<Comentario> comentarios;
+	private String dataFormatada;
+	private Page<ComentarioDTO> comentarios;
 	
 	public PostSelectedDTO() {}
 	
 	public PostSelectedDTO(Post post) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy',  ' HH:mm", new Locale("pt", "BR"));
+
 		this.id = post.getId();
 		this.conteudo = post.getConteudo();
 		this.curtidas = post.getCurtidas();
 		this.usuario = post.getUsuario();
 		this.dataCriacao = post.getDataCriacao();
+		this.dataFormatada = this.dataCriacao.format(formatter);
 	}
 	
 	public Long getId() {
@@ -60,11 +66,17 @@ public class PostSelectedDTO {
 	public static Page<PostSelectedDTO> toPostsSelectedDTO(Page<Post> posts) {
 		return posts.map(PostSelectedDTO::new);
 	}
-	public Page<Comentario> getComentarios() {
+	public Page<ComentarioDTO> getComentarios() {
 		return comentarios;
 	}
 	public void setComentarios(Page<Comentario> comentarios) {
-		this.comentarios = comentarios;
+		this.comentarios = comentarios.map(ComentarioDTO::new);
+	}
+	public String getDataFormatada() {
+		return dataFormatada;
+	}
+	public void setDataFormatada(String dataFormatada) {
+		this.dataFormatada = dataFormatada;
 	}
 	
 }

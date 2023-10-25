@@ -1,6 +1,6 @@
 package br.com.tcc.guardia.rosa.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,12 +25,12 @@ public class Comentario {
 	@ManyToOne
 	private Post post;
 	@	NotNull @NotBlank
-	private LocalDate dataCriacao;
+	private LocalDateTime dataCriacao;
 	
 	public Comentario() {}
 
 	public Comentario(Long id, @NotNull @NotBlank String conteudo, Long curtidas, Usuario usuario, Post post,
-			@NotNull @NotBlank LocalDate dataCriacao) {
+			@NotNull @NotBlank LocalDateTime dataCriacao) {
 		this.id = id;
 		this.conteudo = conteudo;
 		this.curtidas = curtidas;
@@ -68,10 +68,10 @@ public class Comentario {
 	public void setPost(Post post) {
 		this.post = post;
 	}
-	public LocalDate getDataCriacao() {
+	public LocalDateTime getDataCriacao() {
 		return dataCriacao;
 	}
-	public void setDataCriacao(LocalDate dataCriacao) {
+	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
 	

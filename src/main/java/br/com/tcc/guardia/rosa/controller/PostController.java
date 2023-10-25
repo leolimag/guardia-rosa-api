@@ -63,12 +63,12 @@ public class PostController {
 		if (post == null) {
 			throw new PostNotFoundException("Post não encontrado");
 		}
-		
 		Pageable pageable 	= PageRequest.of(0, 10);
 		Page<Comentario> comentarios = comentarioBusiness.getCommentsByPost(id, pageable);
 		PostSelectedDTO postSelected = new PostSelectedDTO(post);
+		System.out.println("sei la");
 		postSelected.setComentarios(comentarios);
-	
+		
 		return postSelected;
 	}
 	
