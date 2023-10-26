@@ -18,7 +18,6 @@ public class PostSelectedDTO {
 	private Usuario usuario;
 	private LocalDateTime dataCriacao;
 	private String dataFormatada;
-	private Page<ComentarioDTO> comentarios;
 	
 	public PostSelectedDTO() {}
 	
@@ -65,12 +64,6 @@ public class PostSelectedDTO {
 	}
 	public static Page<PostSelectedDTO> toPostsSelectedDTO(Page<Post> posts) {
 		return posts.map(PostSelectedDTO::new);
-	}
-	public Page<ComentarioDTO> getComentarios() {
-		return comentarios;
-	}
-	public void setComentarios(Page<Comentario> comentarios) {
-		this.comentarios = comentarios.map(ComentarioDTO::new);
 	}
 	public String getDataFormatada() {
 		return dataFormatada;
