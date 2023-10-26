@@ -25,7 +25,7 @@ public class ComentarioController {
 		this.comentarioBusiness = comentarioBusiness;
 	}
 	
-	@GetMapping("comments/{id}")
+	@GetMapping("/{id}")
 	public Page<ComentarioDTO> getCommentsByPost(@RequestParam(required = false) Integer quantity, @RequestParam Integer page, @PathVariable Long id) {
 		Pageable pageable 	= PageRequest.of(page, quantity);
 		Page<Comentario> comentarios = comentarioBusiness.getCommentsByPost(id, pageable);
