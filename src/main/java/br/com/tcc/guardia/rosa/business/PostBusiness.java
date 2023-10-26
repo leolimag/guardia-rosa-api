@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.tcc.guardia.rosa.exception.DislikeNotAllowedException;
+import br.com.tcc.guardia.rosa.exception.PostNotFoundException;
 import br.com.tcc.guardia.rosa.form.PostForm;
 import br.com.tcc.guardia.rosa.form.UpdatePostForm;
 import br.com.tcc.guardia.rosa.model.Post;
@@ -60,6 +62,27 @@ public class PostBusiness {
 		}
 		
 		return null;
+	}
+	
+	public void like(Long postId) throws PostNotFoundException {
+		Post post = findById(postId);
+		if (post == null) {
+			throw new PostNotFoundException("Comentário não encontrado.");
+		}
+		post.setCurtidas(post.getCurtidas() + 1);
+		repository.save(post);
+	}
+	
+	public void dislike(Long postId) throws PostNotFoundException, DislikeNotAllowedException {
+		Post post = findById(postId);
+		if (post == null) {
+			throw new PostNotFoundException("Comentário não encontrado.");
+		}
+		if (post.getCurtidas() == 0) {
+			throw new DislikeNotAllowedException("Curtidas estão iguais a 0.");
+		}
+		post.setCurtidas(post.getCurtidas() - 1);
+		repository.save(post);
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,16 +21,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.tcc.guardia.rosa.business.ComentarioBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.dto.PostDTO;
 import br.com.tcc.guardia.rosa.dto.PostSelectedDTO;
+import br.com.tcc.guardia.rosa.exception.DislikeNotAllowedException;
 import br.com.tcc.guardia.rosa.exception.PostNotFoundException;
 import br.com.tcc.guardia.rosa.exception.UserNotFoundException;
+import br.com.tcc.guardia.rosa.form.LikePostForm;
 import br.com.tcc.guardia.rosa.form.PostForm;
 import br.com.tcc.guardia.rosa.form.UpdatePostForm;
-import br.com.tcc.guardia.rosa.model.Comentario;
 import br.com.tcc.guardia.rosa.model.Post;
 import br.com.tcc.guardia.rosa.model.Usuario;
 
@@ -39,13 +40,11 @@ public class PostController {
 	
 	private final PostBusiness business;
 	private final UsuarioBusiness usuarioBusiness; 
-	private final ComentarioBusiness comentarioBusiness;
 
 	@Autowired
-	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness, ComentarioBusiness comentarioBusiness) {
+	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness) {
 		this.business = business;
 		this.usuarioBusiness = usuarioBusiness;
-		this.comentarioBusiness = comentarioBusiness;
 	}
 	
 	@GetMapping
@@ -97,6 +96,28 @@ public class PostController {
 			return ResponseEntity.ok(new PostDTO(post));
 		}
 		return ResponseEntity.notFound().build();
+	}
+	
+	@PatchMapping("/like")
+	public ResponseEntity<?>  likePost(@RequestBody @Valid LikePostForm likePostForm) {
+		try {
+			business.like(likePostForm.getId());
+			return ResponseEntity.ok().build();
+		} catch (PostNotFoundException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+
+		}
+	}
+	
+	@PatchMapping("/dislike")
+	public ResponseEntity<?>  dislikePost(@RequestBody @Valid LikePostForm likePostForm) {
+		try {
+			business.dislike(likePostForm.getId());
+			return ResponseEntity.ok().build();
+		} catch (PostNotFoundException | DislikeNotAllowedException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+			
+		}
 	}
 	
 	private ResponseEntity<?> validateUser(Long id) throws UserNotFoundException {
