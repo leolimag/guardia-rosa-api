@@ -20,7 +20,7 @@ public class ComentarioBusiness {
 	public Page<Comentario> getCommentsByPost(Long id, Pageable pageable) {
 		Post post = postBusiness.findById(id);
 		if (post != null) {
-			return repository.findByPost(post, pageable);
+			return repository.findByPostOrderByIdDesc(post, pageable);
 		}
 		
 		return null;
