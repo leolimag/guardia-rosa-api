@@ -19,12 +19,11 @@ public class Comentario {
 	private Long id;
 	@	NotNull @NotBlank
 	private String conteudo;
-	private Long curtidas;
+	private Long curtidas  = 0l;
 	@ManyToOne
 	private Usuario usuario;
 	@ManyToOne
 	private Post post;
-	@	NotNull @NotBlank
 	private LocalDateTime dataCriacao;
 	
 	public Comentario() {}

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.tcc.guardia.rosa.form.CommentForm;
 import br.com.tcc.guardia.rosa.model.Comentario;
 import br.com.tcc.guardia.rosa.model.Post;
 
@@ -23,6 +24,11 @@ public class ComentarioBusiness {
 		}
 		
 		return null;
+	}
+	
+	public void addComment(CommentForm commentForm, UsuarioBusiness usuarioBusiness) {
+		Comentario comentario = commentForm.toComentario(usuarioBusiness, postBusiness);
+		repository.save(comentario);
 	}
 	
 }
