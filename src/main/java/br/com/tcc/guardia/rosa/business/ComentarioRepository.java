@@ -10,5 +10,5 @@ import br.com.tcc.guardia.rosa.model.Post;
 public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
 
 	Page<Comentario> findByPostOrderByIdDesc(Post post, Pageable pageable);
-
+	
 }

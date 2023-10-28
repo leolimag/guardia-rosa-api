@@ -75,7 +75,6 @@ public class Post {
 	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

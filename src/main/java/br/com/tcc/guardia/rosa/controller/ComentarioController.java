@@ -72,23 +72,10 @@ public class ComentarioController {
 	@PatchMapping("/like")
 	public ResponseEntity<?>  likeComment(@RequestBody @Valid LikeCommentForm likeCommentForm) {
 		try {
-			comentarioBusiness.like(likeCommentForm.getId());
-			return ResponseEntity.ok().build();
-		} catch (CommentNotFoundException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-
-		}
-	}
-	
-	
-	@PatchMapping("/dislike")
-	public ResponseEntity<?>  dislikeComment(@RequestBody @Valid LikeCommentForm likeCommentForm) {
-		try {
-			comentarioBusiness.dislike(likeCommentForm.getId());
+			comentarioBusiness.like(likeCommentForm);
 			return ResponseEntity.ok().build();
 		} catch (CommentNotFoundException | DislikeNotAllowedException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
-			
 		}
 	}
 	

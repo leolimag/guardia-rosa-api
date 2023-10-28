@@ -101,22 +101,10 @@ public class PostController {
 	@PatchMapping("/like")
 	public ResponseEntity<?>  likePost(@RequestBody @Valid LikePostForm likePostForm) {
 		try {
-			business.like(likePostForm.getId());
-			return ResponseEntity.ok().build();
-		} catch (PostNotFoundException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-
-		}
-	}
-	
-	@PatchMapping("/dislike")
-	public ResponseEntity<?>  dislikePost(@RequestBody @Valid LikePostForm likePostForm) {
-		try {
-			business.dislike(likePostForm.getId());
+			business.like(likePostForm);
 			return ResponseEntity.ok().build();
 		} catch (PostNotFoundException | DislikeNotAllowedException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
-			
 		}
 	}
 	

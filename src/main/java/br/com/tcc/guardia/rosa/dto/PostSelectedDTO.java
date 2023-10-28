@@ -6,7 +6,6 @@ import java.util.Locale;
 
 import org.springframework.data.domain.Page;
 
-import br.com.tcc.guardia.rosa.model.Comentario;
 import br.com.tcc.guardia.rosa.model.Post;
 import br.com.tcc.guardia.rosa.model.Usuario;
 

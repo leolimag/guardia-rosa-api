@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import br.com.tcc.guardia.rosa.exception.CommentNotFoundException;
 import br.com.tcc.guardia.rosa.exception.DislikeNotAllowedException;
 import br.com.tcc.guardia.rosa.form.CommentForm;
+import br.com.tcc.guardia.rosa.form.LikeCommentForm;
 import br.com.tcc.guardia.rosa.model.Comentario;
+import br.com.tcc.guardia.rosa.model.CurtidaComentario;
 import br.com.tcc.guardia.rosa.model.Post;
+import br.com.tcc.guardia.rosa.model.Usuario;
 
 @Service
 public class ComentarioBusiness {
@@ -20,6 +23,10 @@ public class ComentarioBusiness {
 	private ComentarioRepository repository;
 	@Autowired
 	private PostBusiness postBusiness;
+	@Autowired
+	private UsuarioBusiness usuarioBusiness;
+	@Autowired
+	private CurtidaComentarioBusiness curtidaComentarioBusiness;
 
 	public Page<Comentario> getCommentsByPost(Long id, Pageable pageable) {
 		Post post = postBusiness.findById(id);
@@ -44,24 +51,37 @@ public class ComentarioBusiness {
 		return null;
 	}
 	
-	public void like(Long commentId) throws CommentNotFoundException {
-		Comentario comentario = findById(commentId);
-		if (comentario == null) {
+	public void like(LikeCommentForm likeCommentForm) throws CommentNotFoundException, DislikeNotAllowedException {
+		Comentario comentario = findById(likeCommentForm.getId());
+		Usuario usuario = usuarioBusiness.findById(likeCommentForm.getUsuarioId()).get();
+		Post post = postBusiness.findById(likeCommentForm.getPostId());
+		CurtidaComentario curtidaComentario = new CurtidaComentario();
+		
+		if (comentario == null || usuario == null || post == null) {
 			throw new CommentNotFoundException("Comentário não encontrado.");
 		}
-		comentario.setCurtidas(comentario.getCurtidas() + 1);
-		repository.save(comentario);
+		
+		boolean likedByUser = curtidaComentarioBusiness.isLikedByUser(usuario, post, comentario);
+		if (!likedByUser) {
+			curtidaComentario.setComentario(comentario);
+			curtidaComentario.setPost(post);
+			curtidaComentario.setUsuario(usuario);
+			curtidaComentarioBusiness.save(curtidaComentario);
+			
+			comentario.setCurtidas(comentario.getCurtidas() + 1);
+			repository.save(comentario);
+		} else {
+			curtidaComentario = curtidaComentarioBusiness.findByPostAndUsuarioAndComentario(post, usuario, comentario);
+			dislike(curtidaComentario, comentario);
+		}
 	}
 	
 	
-	public void dislike(Long commentId) throws CommentNotFoundException, DislikeNotAllowedException {
-		Comentario comentario = findById(commentId);
-		if (comentario == null) {
-			throw new CommentNotFoundException("Comentário não encontrado.");
-		}
+	private void dislike(CurtidaComentario curtidaComentario, Comentario comentario) throws DislikeNotAllowedException {
 		if (comentario.getCurtidas() == 0) {
 			throw new DislikeNotAllowedException("Curtidas estão iguais a 0.");
 		}
+		curtidaComentarioBusiness.delete(curtidaComentario);
 		comentario.setCurtidas(comentario.getCurtidas() - 1);
 		repository.save(comentario);
 	}
