@@ -42,7 +42,6 @@ public class GuardiaoBusiness {
 	public Guardiao updateGuardiao(UpdateGuardiaoForm guardiaoForm) {
 		Guardiao guardiao = findById(guardiaoForm.getId()).get();
 		if (guardiao != null) {
-			guardiao.setEmail(guardiaoForm.getEmail());
 			guardiao.setNome(guardiaoForm.getNome());
 			guardiao.setTelefone(guardiaoForm.getTelefone());
 			repository.save(guardiao);

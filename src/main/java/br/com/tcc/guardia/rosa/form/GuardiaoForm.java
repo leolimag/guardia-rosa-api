@@ -12,8 +12,6 @@ public class GuardiaoForm {
 	@NotNull @NotEmpty
 	private String nome;
 	@NotNull @NotEmpty
-	private String email;
-	@NotNull @NotEmpty
 	private String telefone;
 	@Min(1)
 	private Long usuarioId;
@@ -23,12 +21,6 @@ public class GuardiaoForm {
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	public String getTelefone() {
 		return telefone;
@@ -44,7 +36,7 @@ public class GuardiaoForm {
 	}
 	
 	public Guardiao toGuardiao(UsuarioBusiness business) {
-		Guardiao guardiao = new Guardiao(this.nome, this.email, this.telefone, business.findById(usuarioId).get());
+		Guardiao guardiao = new Guardiao(this.nome, this.telefone, business.findById(usuarioId).get());
 		return guardiao;
 	}
 

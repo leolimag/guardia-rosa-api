@@ -30,8 +30,6 @@ public class Usuario implements UserDetails {
 	private String email;
 	@	NotNull @NotBlank @Length(min = 5)
 	private String senha;
-	@	NotNull @NotBlank @Length(max = 11)
-	private String cpf;
 	
 	public Usuario() {
 	
@@ -42,11 +40,10 @@ public class Usuario implements UserDetails {
 	}
 	
 	public Usuario(@NotNull @NotBlank String nome, @NotNull @NotBlank String email,
-			@NotNull @NotBlank @Length(min = 5) String senha, @NotNull @NotBlank @Length(max = 11) String cpf) {
+			@NotNull @NotBlank @Length(min = 5) String senha) {
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
-		this.cpf = cpf;
 	}
 
 	public Long getId() {
@@ -72,13 +69,6 @@ public class Usuario implements UserDetails {
 	}
 	public void setSenha(String senha) {
 		this.senha = senha;
-	}
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
 	}
 
 	@Override

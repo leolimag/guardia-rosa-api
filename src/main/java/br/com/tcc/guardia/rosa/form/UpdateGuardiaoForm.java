@@ -13,8 +13,6 @@ public class UpdateGuardiaoForm {
 	@NotNull @NotEmpty
 	private String nome;
 	@NotNull @NotEmpty
-	private String email;
-	@NotNull @NotEmpty
 	private String telefone;
 	
 	public String getNome() {
@@ -22,12 +20,6 @@ public class UpdateGuardiaoForm {
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	public String getTelefone() {
 		return telefone;

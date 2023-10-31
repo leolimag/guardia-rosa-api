@@ -10,7 +10,6 @@ public class GuardiaoDTO {
 	
 	private Long id;
 	private String nome;
-	private String email;
 	private String telefone;
 	private Usuario usuario;
 	private Boolean favorito;
@@ -23,7 +22,6 @@ public class GuardiaoDTO {
 		super();
 		this.id = guardiao.getId();
 		this.nome = guardiao.getNome();
-		this.email = guardiao.getEmail();
 		this.telefone = guardiao.getTelefone();
 		this.usuario = guardiao.getUsuario();
 		this.favorito = guardiao.isFavorito();
@@ -39,12 +37,6 @@ public class GuardiaoDTO {
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	public String getTelefone() {
 		return telefone;

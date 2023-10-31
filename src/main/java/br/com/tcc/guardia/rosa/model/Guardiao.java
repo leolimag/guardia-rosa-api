@@ -15,7 +15,6 @@ public class Guardiao {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long  id;
 	private String nome;
-	private String email;
 	private String telefone;
 	@ManyToOne
 	private Usuario usuario;
@@ -25,9 +24,8 @@ public class Guardiao {
 		
 	}
 	
-	public Guardiao(String nome, String email, String telefone, Usuario usuario) {
+	public Guardiao(String nome, String telefone, Usuario usuario) {
 		this.nome = nome;
-		this.email = email;
 		this.telefone = telefone;
 		this.usuario = usuario;
 	}
@@ -43,12 +41,6 @@ public class Guardiao {
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	public String getTelefone() {
 		return telefone;

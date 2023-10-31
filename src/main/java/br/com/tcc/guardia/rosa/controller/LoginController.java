@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,17 +64,19 @@ public class LoginController {
 		String token = tokenService.generateToken(auth);
 		Usuario usuario = (Usuario) auth.getPrincipal();
 		
-		return ResponseEntity.ok(new LoginResponseDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), token, usuario.getCpf())); 
+		return ResponseEntity.ok(new LoginResponseDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), token)); 
 	}
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO register) {
 		if (business.findByEmail(register.getEmail()) != null) {
-			return ResponseEntity.badRequest().build();
+			return ResponseEntity.badRequest().body("Este e-mail já foi cadastrado.");
 		}
 		
+		validateEmail(register);
+		
 		String encryptedPassword = new BCryptPasswordEncoder().encode(register.getPassword());
-		Usuario usuario = new Usuario(register.getName(), register.getEmail(), encryptedPassword, register.getCpf());
+		Usuario usuario = new Usuario(register.getName(), register.getEmail(), encryptedPassword);
 		business.save(usuario);
 		
 		return ResponseEntity.ok().build();
@@ -90,7 +94,11 @@ public class LoginController {
 		Usuario usuario = usuarioOpt.get();
 		resetBusiness.saveResetSenha(usuario, Integer.parseInt(codigoFormatado));
 
-		mailSender.send(sendEmail(usuario, Integer.parseInt(codigoFormatado)));
+		try {
+			mailSender.send(sendEmail(usuario, Integer.parseInt(codigoFormatado)));
+		} catch (MailSendException e) {
+			return ResponseEntity.badRequest().body("Endereço de e-mail inválido ou inexistente!");
+		}
 		
 		return ResponseEntity.ok().build();
 	}
@@ -129,6 +137,47 @@ public class LoginController {
 	    email.setTo(usuario.getEmail());
 	    email.setFrom("abracorosa.tcc@gmail.com"); 
 	    return email;
+	}
+	
+	@GetMapping("/validate-email")
+	private ResponseEntity<?> validateEmail(RegisterDTO user) {
+		try {
+			mailSender.send(sendTestEmail(user));
+		} catch (MailSendException e) {
+			return ResponseEntity.badRequest().body("Endereço de e-mail inválido ou inexistente!");
+		}
+		return ResponseEntity.ok().build();
+	}
+	
+	private SimpleMailMessage sendTestEmail(RegisterDTO user) {
+		SimpleMailMessage email = new SimpleMailMessage();
+	    email.setSubject("Bem-vinda ao AbraçoRosa!");
+	    email.setText("Prezada " + user.getName() + ",\r\n"
+	    		+ "\r\n"
+	    		+ "Estamos muito felizes em tê-la aqui no AbraçoRosa, um espaço dedicado à sua segurança e bem-estar. Seja muito bem-vinda!\r\n"
+	    		+ "\r\n"
+	    		+ "Sabemos que viver em um mundo onde a segurança é uma preocupação constante pode ser desafiador, mas estamos aqui para ajudar. AbraçoRosa foi projetado para oferecer a você paz de espírito, fornecendo ferramentas e recursos que podem ser vitais em situações de risco.\r\n"
+	    		+ "\r\n"
+	    		+ "Nossa missão é garantir que você se sinta segura, fortalecida e apoiada a qualquer momento. Com AbraçoRosa, você terá acesso a:\r\n"
+	    		+ "\r\n"
+	    		+ "- Recursos de rastreamento em tempo real para compartilhar sua localização com pessoas de confiança.\r\n"
+	    		+ "- Um botão de pânico que pode ser acionado rapidamente em situações de emergência.\r\n"
+	    		+ "- Dicas e orientações sobre segurança pessoal e prevenção.\r\n"
+	    		+ "- Comunidade de apoio com outras mulheres que compartilham preocupações semelhantes.\r\n"
+	    		+ "\r\n"
+	    		+ "Lembre-se de que você não está sozinha. Estamos comprometidos em cuidar de você e em fornecer uma plataforma segura onde você pode se expressar, compartilhar histórias e aprender juntas.\r\n"
+	    		+ "\r\n"
+	    		+ "Explore nosso aplicativo, familiarize-se com nossos recursos e, acima de tudo, confie em sua intuição. Sua segurança é fundamental, e estamos aqui para ajudá-la a proteger-se.\r\n"
+	    		+ "\r\n"
+	    		+ "Se precisar de ajuda ou tiver alguma dúvida, nossa equipe de suporte está disponível a qualquer momento. Não hesite em entrar em contato conosco.\r\n"
+	    		+ "\r\n"
+	    		+ "Juntas, podemos criar um mundo mais seguro e acolhedor para todas as mulheres. Obrigada por fazer parte da nossa comunidade.\r\n"
+	    		+ "\r\n"
+	    		+ "Com carinho,\r\n"
+	    		+ "A Equipe do AbraçoRosa.") ;
+		email.setTo(user.getEmail());
+		email.setFrom("abracorosa.tcc@gmail.com"); 
+		return email;
 	}
 	
 	@PatchMapping("/reset-password")
