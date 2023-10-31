@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Formula;
+
 @Entity
 @Table(name = "post")
 public class Post {
@@ -22,18 +24,20 @@ public class Post {
 	private Long id;
 	@	NotNull @NotBlank
 	private String conteudo;
-	private Long curtidas = 0l;
 	@ManyToOne
 	private Usuario usuario;
 	private LocalDateTime dataCriacao;
+    @Formula("(SELECT COUNT(*) FROM curtida_post cp WHERE cp.post_id = id)")
+	private Long curtidas;
+    @Formula("(SELECT COUNT(*) FROM comentario c WHERE c.post_id = id)")
+    private Long comentarios;
 	
 	public Post() {}
 	
-	public Post(Long id, @NotNull @NotBlank String conteudo, Long curtidas,
+	public Post(Long id, @NotNull @NotBlank String conteudo,
 			@NotNull @NotBlank Usuario usuario, @NotNull @NotBlank LocalDateTime dataCriacao) {
 		this.id = id;
 		this.conteudo = conteudo;
-		this.curtidas = curtidas;
 		this.usuario = usuario;
 		this.dataCriacao = dataCriacao;
 	}
@@ -57,12 +61,6 @@ public class Post {
 	public void setConteudo(String conteudo) {
 		this.conteudo = conteudo;
 	}
-	public Long getCurtidas() {
-		return curtidas;
-	}
-	public void setCurtidas(Long curtidas) {
-		this.curtidas = curtidas;
-	}
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -77,6 +75,18 @@ public class Post {
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public Long getCurtidas() {
+		return curtidas;
+	}
+	public void setCurtidas(Long curtidas) {
+		this.curtidas = curtidas;
+	}
+	public Long getComentarios() {
+		return comentarios;
+	}
+	public void setComentarios(Long comentarios) {
+		this.comentarios = comentarios;
 	}
 	
 }

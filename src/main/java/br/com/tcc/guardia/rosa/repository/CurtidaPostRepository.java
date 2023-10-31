@@ -15,5 +15,4 @@ public interface CurtidaPostRepository extends JpaRepository<CurtidaPost, Long> 
 
 	CurtidaPost findByPostAndUsuario(Post post, Usuario usuario);
 	
-	
 }

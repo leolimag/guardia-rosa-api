@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import org.hibernate.annotations.Formula;
 import org.springframework.data.domain.Page;
 
 import br.com.tcc.guardia.rosa.model.Post;
@@ -13,10 +14,12 @@ public class PostSelectedDTO {
 	
 	private Long id;
 	private String conteudo;
-	private Long curtidas;
 	private Usuario usuario;
 	private LocalDateTime dataCriacao;
 	private String dataFormatada;
+    @Formula("(SELECT COUNT(*) FROM curtida_post cp WHERE cp.post_id = id)")
+	private Long curtidas;
+    private Long comentarios;
 	
 	public PostSelectedDTO() {}
 	
@@ -25,10 +28,11 @@ public class PostSelectedDTO {
 
 		this.id = post.getId();
 		this.conteudo = post.getConteudo();
-		this.curtidas = post.getCurtidas();
 		this.usuario = post.getUsuario();
 		this.dataCriacao = post.getDataCriacao();
 		this.dataFormatada = this.dataCriacao.format(formatter);
+		this.curtidas = post.getCurtidas();
+		this.comentarios = post.getComentarios();
 	}
 	
 	public Long getId() {
@@ -43,12 +47,6 @@ public class PostSelectedDTO {
 	public void setConteudo(String conteudo) {
 		this.conteudo = conteudo;
 	}
-	public Long getCurtidas() {
-		return curtidas;
-	}
-	public void setCurtidas(Long curtidas) {
-		this.curtidas = curtidas;
-	}
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -61,14 +59,26 @@ public class PostSelectedDTO {
 	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
 	}
-	public static Page<PostSelectedDTO> toPostsSelectedDTO(Page<Post> posts) {
-		return posts.map(PostSelectedDTO::new);
-	}
 	public String getDataFormatada() {
 		return dataFormatada;
 	}
 	public void setDataFormatada(String dataFormatada) {
 		this.dataFormatada = dataFormatada;
+	}
+	public Long getCurtidas() {
+		return curtidas;
+	}
+	public void setCurtidas(Long curtidas) {
+		this.curtidas = curtidas;
+	}
+	public Long getComentarios() {
+		return comentarios;
+	}
+	public void setComentarios(Long comentarios) {
+		this.comentarios = comentarios;
+	}
+	public static Page<PostSelectedDTO> toPostsSelectedDTO(Page<Post> posts) {
+		return posts.map(PostSelectedDTO::new);
 	}
 	
 }

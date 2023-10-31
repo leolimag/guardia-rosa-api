@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Formula;
+
 @Entity
 @Table(name = "comentario")
 public class Comentario {
@@ -19,20 +21,20 @@ public class Comentario {
 	private Long id;
 	@	NotNull @NotBlank
 	private String conteudo;
-	private Long curtidas  = 0l;
 	@ManyToOne
 	private Usuario usuario;
 	@ManyToOne
 	private Post post;
-	private LocalDateTime dataCriacao;
-	
-	public Comentario() {}
+	private LocalDateTime dataCriacao;	 
+    @Formula("(SELECT COUNT(*) FROM curtida_comentario cc WHERE cc.comentario_id = id)")
+    private Long curtidas;
 
-	public Comentario(Long id, @NotNull @NotBlank String conteudo, Long curtidas, Usuario usuario, Post post,
+	public Comentario() {}
+	
+	public Comentario(Long id, @NotNull @NotBlank String conteudo, Usuario usuario, Post post,
 			@NotNull @NotBlank LocalDateTime dataCriacao) {
 		this.id = id;
 		this.conteudo = conteudo;
-		this.curtidas = curtidas;
 		this.usuario = usuario;
 		this.post = post;
 		this.dataCriacao = dataCriacao;
@@ -48,12 +50,6 @@ public class Comentario {
 	}
 	public void setConteudo(String conteudo) {
 		this.conteudo = conteudo;
-	}
-	public Long getCurtidas() {
-		return curtidas;
-	}
-	public void setCurtidas(Long curtidas) {
-		this.curtidas = curtidas;
 	}
 	public Usuario getUsuario() {
 		return usuario;
@@ -72,6 +68,12 @@ public class Comentario {
 	}
 	public void setDataCriacao(LocalDateTime dataCriacao) {
 		this.dataCriacao = dataCriacao;
+	}
+	public Long getCurtidas() {
+		return curtidas;
+	}
+	public void setCurtidas(Long curtidas) {
+		this.curtidas = curtidas;
 	}
 	
 }

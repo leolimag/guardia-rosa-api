@@ -13,22 +13,24 @@ public class PostDTO {
 	
 	private Long id;
 	private String conteudo;
-	private Long curtidas;
 	private Usuario usuario;
 	private LocalDateTime dataCriacao;
 	private String dataFormatada;
+	private Long curtidas;
+    private Long comentarios;
 	
 	public PostDTO() {}
 	
 	public PostDTO(Post post) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy',  ' HH:mm", new Locale("pt", "BR"));
-		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy',  ' HH:mm", new Locale("pt", "BR"));
+        
 		this.id = post.getId();
 		this.conteudo = post.getConteudo();
-		this.curtidas = post.getCurtidas();
 		this.usuario = post.getUsuario();
 		this.dataCriacao = post.getDataCriacao();
 		this.dataFormatada = this.dataCriacao.format(formatter);
+		this.curtidas = post.getCurtidas();
+		this.comentarios = post.getComentarios();
 	}
 	
 	public Long getId() {
@@ -42,12 +44,6 @@ public class PostDTO {
 	}
 	public void setConteudo(String conteudo) {
 		this.conteudo = conteudo;
-	}
-	public Long getCurtidas() {
-		return curtidas;
-	}
-	public void setCurtidas(Long curtidas) {
-		this.curtidas = curtidas;
 	}
 	public Usuario getUsuario() {
 		return usuario;
@@ -66,6 +62,18 @@ public class PostDTO {
 	}
 	public void setDataFormatada(String dataFormatada) {
 		this.dataFormatada = dataFormatada;
+	}
+	public Long getCurtidas() {
+		return curtidas;
+	}
+	public void setCurtidas(Long curtidas) {
+		this.curtidas = curtidas;
+	}
+	public Long getComentarios() {
+		return comentarios;
+	}
+	public void setComentarios(Long comentarios) {
+		this.comentarios = comentarios;
 	}
 	public static Page<PostDTO> toPostsDTO(Page<Post> posts) {
 		return posts.map(PostDTO::new);

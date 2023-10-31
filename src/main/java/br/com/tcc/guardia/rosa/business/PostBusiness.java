@@ -83,7 +83,6 @@ public class PostBusiness {
 			curtidaPost.setUsuario(usuario);
 			curtidaPostBusiness.save(curtidaPost);
 			
-			post.setCurtidas(post.getCurtidas() + 1);
 			repository.save(post);
 		} else {
 			curtidaPost = curtidaPostBusiness.findByPostAndUsuario(post, usuario);
@@ -93,12 +92,8 @@ public class PostBusiness {
 	}
 	
 	public void dislike(CurtidaPost curtidaPost, Post post) throws PostNotFoundException, DislikeNotAllowedException {
-		if (post.getCurtidas() == 0) {
-			throw new DislikeNotAllowedException("Curtidas estão iguais a 0.");
-		}
 		curtidaPostBusiness.delete(curtidaPost);
-		post.setCurtidas(post.getCurtidas() - 1);
 		repository.save(post);
 	}
-
+	
 }

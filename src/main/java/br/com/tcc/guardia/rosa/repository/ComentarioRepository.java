@@ -1,4 +1,4 @@
-package br.com.tcc.guardia.rosa.business;
+package br.com.tcc.guardia.rosa.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

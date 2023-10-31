@@ -15,6 +15,7 @@ import br.com.tcc.guardia.rosa.model.Comentario;
 import br.com.tcc.guardia.rosa.model.CurtidaComentario;
 import br.com.tcc.guardia.rosa.model.Post;
 import br.com.tcc.guardia.rosa.model.Usuario;
+import br.com.tcc.guardia.rosa.repository.ComentarioRepository;
 
 @Service
 public class ComentarioBusiness {
@@ -68,7 +69,6 @@ public class ComentarioBusiness {
 			curtidaComentario.setUsuario(usuario);
 			curtidaComentarioBusiness.save(curtidaComentario);
 			
-			comentario.setCurtidas(comentario.getCurtidas() + 1);
 			repository.save(comentario);
 		} else {
 			curtidaComentario = curtidaComentarioBusiness.findByPostAndUsuarioAndComentario(post, usuario, comentario);
@@ -78,11 +78,7 @@ public class ComentarioBusiness {
 	
 	
 	private void dislike(CurtidaComentario curtidaComentario, Comentario comentario) throws DislikeNotAllowedException {
-		if (comentario.getCurtidas() == 0) {
-			throw new DislikeNotAllowedException("Curtidas estão iguais a 0.");
-		}
 		curtidaComentarioBusiness.delete(curtidaComentario);
-		comentario.setCurtidas(comentario.getCurtidas() - 1);
 		repository.save(comentario);
 	}
 	
