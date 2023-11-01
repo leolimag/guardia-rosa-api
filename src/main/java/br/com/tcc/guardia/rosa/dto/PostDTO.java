@@ -18,6 +18,7 @@ public class PostDTO {
 	private String dataFormatada;
 	private Long curtidas;
     private Long comentarios;
+    private boolean curtido;
 	
 	public PostDTO() {}
 	
@@ -31,6 +32,7 @@ public class PostDTO {
 		this.dataFormatada = this.dataCriacao.format(formatter);
 		this.curtidas = post.getCurtidas();
 		this.comentarios = post.getComentarios();
+		this.curtido = post.isCurtido();
 	}
 	
 	public Long getId() {
@@ -74,6 +76,12 @@ public class PostDTO {
 	}
 	public void setComentarios(Long comentarios) {
 		this.comentarios = comentarios;
+	}
+	public boolean isCurtido() {
+		return curtido;
+	}
+	public void setCurtido(boolean curtido) {
+		this.curtido = curtido;
 	}
 	public static Page<PostDTO> toPostsDTO(Page<Post> posts) {
 		return posts.map(PostDTO::new);

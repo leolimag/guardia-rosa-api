@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.tcc.guardia.rosa.business.CurtidaPostBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.dto.PostDTO;
@@ -40,19 +41,36 @@ public class PostController {
 	
 	private final PostBusiness business;
 	private final UsuarioBusiness usuarioBusiness; 
+	private final CurtidaPostBusiness curtidaPostBusiness; 
 
 	@Autowired
-	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness) {
+	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness, CurtidaPostBusiness curtidaPostBusiness) {
 		this.business = business;
 		this.usuarioBusiness = usuarioBusiness;
+		this.curtidaPostBusiness = curtidaPostBusiness;
 	}
 	
 	@GetMapping
-	public Page<PostDTO> getAllPosts(@RequestParam(required = false) Integer quantity, @RequestParam Integer page) {
+	public Page<PostDTO> getAllPosts(@RequestParam(required = false) Integer quantity, @RequestParam Integer page, @RequestParam Long usuarioId) throws UserNotFoundException {
+		Optional<Usuario> usuarioOpt = usuarioBusiness.findById(usuarioId);
+		Usuario usuario = new Usuario();
+		
+		if (usuarioOpt.isPresent()) {
+			usuario = usuarioOpt.get();
+		} else {
+			throw new UserNotFoundException("Usuário não encontrado.");
+		}
+		
+		final Usuario finalUsuario = usuario;
+		
 		Pageable pageable 	= PageRequest.of(page, quantity);
 		Page<Post> posts = business.getAllPosts(pageable);
-		Page<PostDTO> postsDTO = PostDTO.toPostsDTO(posts);
 		
+		posts .forEach(post -> {
+			post.setCurtido(curtidaPostBusiness.isLikedByUser(finalUsuario, post));
+		});
+		
+		Page<PostDTO> postsDTO = PostDTO.toPostsDTO(posts);
 		return postsDTO;
 	}
 	

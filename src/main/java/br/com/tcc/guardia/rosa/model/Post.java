@@ -31,6 +31,7 @@ public class Post {
 	private Long curtidas;
     @Formula("(SELECT COUNT(*) FROM comentario c WHERE c.post_id = id)")
     private Long comentarios;
+    private boolean curtido;
 	
 	public Post() {}
 	
@@ -87,6 +88,12 @@ public class Post {
 	}
 	public void setComentarios(Long comentarios) {
 		this.comentarios = comentarios;
+	}
+	public boolean isCurtido() {
+		return curtido;
+	}
+	public void setCurtido(boolean curtido) {
+		this.curtido = curtido;
 	}
 	
 }
