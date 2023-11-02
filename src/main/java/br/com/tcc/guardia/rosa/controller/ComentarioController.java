@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.tcc.guardia.rosa.business.ComentarioBusiness;
+import br.com.tcc.guardia.rosa.business.CurtidaComentarioBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.dto.ComentarioDTO;
@@ -39,18 +40,38 @@ public class ComentarioController {
 	private final ComentarioBusiness comentarioBusiness;
 	private final UsuarioBusiness usuarioBusiness;
 	private final PostBusiness postBusiness;
+	private final CurtidaComentarioBusiness curtidaComentarioBusiness;
 	
 	@Autowired
-	public ComentarioController(ComentarioBusiness comentarioBusiness, UsuarioBusiness usuarioBusiness, PostBusiness postBusiness) {
+	public ComentarioController(ComentarioBusiness comentarioBusiness, UsuarioBusiness usuarioBusiness, PostBusiness postBusiness, CurtidaComentarioBusiness curtidaComentarioBusiness) {
 		this.comentarioBusiness = comentarioBusiness;
 		this.usuarioBusiness = usuarioBusiness;
 		this.postBusiness = postBusiness;
+		this.curtidaComentarioBusiness = curtidaComentarioBusiness;
 	}
 	
 	@GetMapping("/{id}")
-	public Page<ComentarioDTO> getCommentsByPost(@RequestParam(required = false) Integer quantity, @RequestParam Integer page, @PathVariable Long id) {
+	public Page<ComentarioDTO> getCommentsByPost(@RequestParam(required = false) Integer quantity, @RequestParam Integer page, @PathVariable Long id, @RequestParam Long usuarioId) throws UserNotFoundException {
+		Optional<Usuario> usuarioOpt = usuarioBusiness.findById(usuarioId);
+		Usuario usuario = new Usuario();
+		
+		if (usuarioOpt.isPresent()) {
+			usuario = usuarioOpt.get();
+		} else {
+			throw new UserNotFoundException("Usuário não encontrado.");
+		}
+		
+		Post post = postBusiness.findById(id);
+		
+		final Usuario finalUsuario = usuario;
+		
 		Pageable pageable 	= PageRequest.of(page, quantity);
 		Page<Comentario> comentarios = comentarioBusiness.getCommentsByPost(id, pageable);
+		
+		comentarios .forEach(comentario -> {
+			comentario.setCurtido(curtidaComentarioBusiness.isLikedByUser(finalUsuario, post, comentario));
+		});
+		
 		Page<ComentarioDTO> comentariosDTO = ComentarioDTO.toComentarioDTO(comentarios);
 		
 		return comentariosDTO;

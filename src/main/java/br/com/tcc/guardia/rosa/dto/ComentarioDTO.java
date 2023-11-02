@@ -19,6 +19,7 @@ public class ComentarioDTO {
 	private LocalDateTime dataCriacao;
 	private String dataFormatada;
 	private Long curtidas;
+	private boolean curtido;
 	
 	public ComentarioDTO(Comentario comentario) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy',  ' HH:mm", new Locale("pt", "BR"));
@@ -30,7 +31,9 @@ public class ComentarioDTO {
 		this.dataCriacao = comentario.getDataCriacao();
 		this.dataFormatada = this.dataCriacao.format(formatter);
 		this.curtidas = comentario.getCurtidas();
+		this.curtido = comentario.isCurtido();
 	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -75,6 +78,12 @@ public class ComentarioDTO {
 	}
 	public static Page<ComentarioDTO> toComentarioDTO(Page<Comentario> comentarios) {
 		return comentarios.map(ComentarioDTO::new);
+	}
+	public boolean isCurtido() {
+		return curtido;
+	}
+	public void setCurtido(boolean curtido) {
+		this.curtido = curtido;
 	}
 	
 }

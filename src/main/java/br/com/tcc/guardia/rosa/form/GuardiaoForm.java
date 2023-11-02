@@ -4,6 +4,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.model.Guardiao;
 
@@ -11,7 +13,7 @@ public class GuardiaoForm {
 	
 	@NotNull @NotEmpty
 	private String nome;
-	@NotNull @NotEmpty
+	@NotNull @NotEmpty @Length(min = 11)
 	private String telefone;
 	@Min(1)
 	private Long usuarioId;

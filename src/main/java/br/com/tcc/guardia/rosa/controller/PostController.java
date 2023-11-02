@@ -75,11 +75,22 @@ public class PostController {
 	}
 	
 	@GetMapping("/selected/{id}")
-	public PostSelectedDTO getPostById(@PathVariable Long id) throws PostNotFoundException {
+	public PostSelectedDTO getPostById(@PathVariable Long id, @RequestParam Long usuarioId) throws PostNotFoundException, UserNotFoundException {
+		Optional<Usuario> usuarioOpt = usuarioBusiness.findById(usuarioId);
+		Usuario usuario = new Usuario();
+		
+		if (usuarioOpt.isPresent()) {
+			usuario = usuarioOpt.get();
+		} else {
+			throw new UserNotFoundException("Usuário não encontrado.");
+		}
+		
 		Post post = business.findById(id);
 		if (post == null) {
 			throw new PostNotFoundException("Post não encontrado");
 		}
+		
+		post.setCurtido(curtidaPostBusiness.isLikedByUser(usuario, post));
 		PostSelectedDTO postSelected = new PostSelectedDTO(post);
 		
 		return postSelected;

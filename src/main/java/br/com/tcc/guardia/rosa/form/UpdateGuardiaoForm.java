@@ -4,6 +4,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
+
 
 
 public class UpdateGuardiaoForm {
@@ -12,7 +14,7 @@ public class UpdateGuardiaoForm {
 	private Long id;
 	@NotNull @NotEmpty
 	private String nome;
-	@NotNull @NotEmpty
+	@NotNull @NotEmpty @Length(min = 11)
 	private String telefone;
 	
 	public String getNome() {

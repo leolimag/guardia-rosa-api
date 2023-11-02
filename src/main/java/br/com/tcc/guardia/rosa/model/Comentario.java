@@ -28,6 +28,7 @@ public class Comentario {
 	private LocalDateTime dataCriacao;	 
     @Formula("(SELECT COUNT(*) FROM curtida_comentario cc WHERE cc.comentario_id = id)")
     private Long curtidas;
+    private boolean curtido;
 
 	public Comentario() {}
 	
@@ -74,6 +75,12 @@ public class Comentario {
 	}
 	public void setCurtidas(Long curtidas) {
 		this.curtidas = curtidas;
+	}
+	public boolean isCurtido() {
+		return curtido;
+	}
+	public void setCurtido(boolean curtido) {
+		this.curtido = curtido;
 	}
 	
 }
