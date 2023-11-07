@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +30,7 @@ import br.com.tcc.guardia.rosa.dto.LoginDTO;
 import br.com.tcc.guardia.rosa.dto.LoginResponseDTO;
 import br.com.tcc.guardia.rosa.dto.RegisterDTO;
 import br.com.tcc.guardia.rosa.dto.ResetPasswordDTO;
+import br.com.tcc.guardia.rosa.dto.UserPhotoDTO;
 import br.com.tcc.guardia.rosa.exception.ExpirationCodeException;
 import br.com.tcc.guardia.rosa.exception.InvalidCodeException;
 import br.com.tcc.guardia.rosa.exception.UserNotFoundException;
@@ -63,7 +65,7 @@ public class LoginController {
 		String token = tokenService.generateToken(auth);
 		Usuario usuario = (Usuario) auth.getPrincipal();
 		
-		return ResponseEntity.ok(new LoginResponseDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), token)); 
+		return ResponseEntity.ok(new LoginResponseDTO(usuario.getId(), usuario.getNome(), usuario.getEmail(), token, usuario.getFoto())); 
 	}
 	
 	@PostMapping("/register")
@@ -77,6 +79,21 @@ public class LoginController {
 		business.save(usuario);
 		
 		return ResponseEntity.ok().build();
+	}
+	
+	@PutMapping("/photo")
+	public ResponseEntity<?> updatePhoto(@RequestBody @Valid UserPhotoDTO userPhoto) {
+		try {
+			Optional<Usuario> usuarioOpt = business.findById(userPhoto.getIdUsuario());
+			validateUser(usuarioOpt);
+			Usuario usuario = usuarioOpt.get();
+			usuario.setFoto(userPhoto.getFoto());
+			business.save(usuario);
+			
+			return ResponseEntity.ok().build();
+		} catch (UserNotFoundException e) {
+			return ResponseEntity.badRequest().body("Este usuário não existe");
+		}
 	}
 	
 	@PostMapping("/forget-password")

@@ -30,6 +30,7 @@ public class Usuario implements UserDetails {
 	private String email;
 	@	NotNull @NotBlank @Length(min = 5)
 	private String senha;
+	private String foto;
 	
 	public Usuario() {
 	
@@ -69,6 +70,12 @@ public class Usuario implements UserDetails {
 	}
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 
 	@Override
