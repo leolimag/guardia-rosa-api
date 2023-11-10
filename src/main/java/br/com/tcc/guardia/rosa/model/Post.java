@@ -32,6 +32,8 @@ public class Post {
     @Formula("(SELECT COUNT(*) FROM comentario c WHERE c.post_id = id)")
     private Long comentarios;
     private boolean curtido;
+    @Formula("(SELECT u.foto from usuario u WHERE u.id = usuario_id)")
+    private String foto;
 	
 	public Post() {}
 	
@@ -94,6 +96,12 @@ public class Post {
 	}
 	public void setCurtido(boolean curtido) {
 		this.curtido = curtido;
+	}
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 	
 }

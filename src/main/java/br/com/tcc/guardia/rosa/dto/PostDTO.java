@@ -19,6 +19,7 @@ public class PostDTO {
 	private Long curtidas;
     private Long comentarios;
     private boolean curtido;
+    private String foto;
 	
 	public PostDTO() {}
 	
@@ -33,6 +34,7 @@ public class PostDTO {
 		this.curtidas = post.getCurtidas();
 		this.comentarios = post.getComentarios();
 		this.curtido = post.isCurtido();
+		this.foto = post.getFoto();
 	}
 	
 	public Long getId() {
@@ -82,6 +84,12 @@ public class PostDTO {
 	}
 	public void setCurtido(boolean curtido) {
 		this.curtido = curtido;
+	}
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 	public static Page<PostDTO> toPostsDTO(Page<Post> posts) {
 		return posts.map(PostDTO::new);

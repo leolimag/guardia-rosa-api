@@ -23,7 +23,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.tcc.guardia.rosa.business.CurtidaPostBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
-import br.com.tcc.guardia.rosa.business.ProcessorBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.dto.PostDTO;
 import br.com.tcc.guardia.rosa.dto.PostSelectedDTO;
@@ -43,17 +42,13 @@ public class PostController {
 	private final PostBusiness business;
 	private final UsuarioBusiness usuarioBusiness; 
 	private final CurtidaPostBusiness curtidaPostBusiness; 
-	private final ProcessorBusiness processorBusiness;
 
 	@Autowired
-	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness, CurtidaPostBusiness curtidaPostBusiness, ProcessorBusiness processorBusiness) {
+	public PostController(PostBusiness business, UsuarioBusiness usuarioBusiness, CurtidaPostBusiness curtidaPostBusiness) {
 		this.business = business;
 		this.usuarioBusiness = usuarioBusiness;
 		this.curtidaPostBusiness = curtidaPostBusiness;
-		this.processorBusiness = processorBusiness;
 	}
-	
-	
 	
 	@GetMapping
 	public Page<PostDTO> getAllPosts(@RequestParam(required = false) Integer quantity, @RequestParam Integer page, @RequestParam Long usuarioId) throws UserNotFoundException {

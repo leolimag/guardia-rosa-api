@@ -91,6 +91,32 @@ public class PostBusiness {
 		
 	}
 	
+	public Long likeTeste(LikePostForm likePostForm) throws PostNotFoundException, DislikeNotAllowedException {
+		Post post = findById(likePostForm.getId());
+		
+		Usuario usuario = usuarioBusiness.findById(likePostForm.getUsuarioId()).get();
+		CurtidaPost curtidaPost = new CurtidaPost();
+		
+		if (post == null || usuario == null) {
+			throw new PostNotFoundException("Post não encontrado.");
+		}
+		
+		boolean likedByUser = curtidaPostBusiness.isLikedByUser(usuario, post);
+		if (!likedByUser) {
+			curtidaPost.setPost(post);
+			curtidaPost.setUsuario(usuario);
+			curtidaPostBusiness.save(curtidaPost);
+			
+			repository.save(post);
+		} else {
+			curtidaPost = curtidaPostBusiness.findByPostAndUsuario(post, usuario);
+			dislike(curtidaPost, post);
+		}
+		
+		return curtidaPostBusiness.getCurtidas(post);
+		
+	}
+	
 	public void dislike(CurtidaPost curtidaPost, Post post) throws PostNotFoundException, DislikeNotAllowedException {
 		curtidaPostBusiness.delete(curtidaPost);
 		repository.save(post);

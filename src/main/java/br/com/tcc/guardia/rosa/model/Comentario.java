@@ -29,6 +29,8 @@ public class Comentario {
     @Formula("(SELECT COUNT(*) FROM curtida_comentario cc WHERE cc.comentario_id = id)")
     private Long curtidas;
     private boolean curtido;
+    @Formula("(SELECT u.foto from usuario u WHERE u.id = usuario_id)")
+    private String foto;
 
 	public Comentario() {}
 	
@@ -81,6 +83,12 @@ public class Comentario {
 	}
 	public void setCurtido(boolean curtido) {
 		this.curtido = curtido;
+	}
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 	
 }

@@ -33,4 +33,8 @@ public class CurtidaPostBusiness {
 		return repository.findByPostAndUsuario(post, usuario);
 	}
 	
+	public Long getCurtidas(Post post) {
+		return repository.getCurtidas(post);
+	}
+	
 }

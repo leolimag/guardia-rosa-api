@@ -20,6 +20,7 @@ public class ComentarioDTO {
 	private String dataFormatada;
 	private Long curtidas;
 	private boolean curtido;
+	private String foto;
 	
 	public ComentarioDTO(Comentario comentario) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d 'de' MMMM 'de' yyyy',  ' HH:mm", new Locale("pt", "BR"));
@@ -32,6 +33,7 @@ public class ComentarioDTO {
 		this.dataFormatada = this.dataCriacao.format(formatter);
 		this.curtidas = comentario.getCurtidas();
 		this.curtido = comentario.isCurtido();
+		this.foto = comentario.getFoto();
 	}
 	
 	public Long getId() {
@@ -76,14 +78,20 @@ public class ComentarioDTO {
 	public void setCurtidas(Long curtidas) {
 		this.curtidas = curtidas;
 	}
-	public static Page<ComentarioDTO> toComentarioDTO(Page<Comentario> comentarios) {
-		return comentarios.map(ComentarioDTO::new);
-	}
 	public boolean isCurtido() {
 		return curtido;
 	}
 	public void setCurtido(boolean curtido) {
 		this.curtido = curtido;
+	}
+	public String getFoto() {
+		return foto;
+	}
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+	public static Page<ComentarioDTO> toComentarioDTO(Page<Comentario> comentarios) {
+		return comentarios.map(ComentarioDTO::new);
 	}
 	
 }

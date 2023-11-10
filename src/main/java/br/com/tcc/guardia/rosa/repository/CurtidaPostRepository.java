@@ -15,4 +15,7 @@ public interface CurtidaPostRepository extends JpaRepository<CurtidaPost, Long> 
 
 	CurtidaPost findByPostAndUsuario(Post post, Usuario usuario);
 	
+	@Query("SELECT COUNT(*) FROM CurtidaPost cp WHERE cp.post = :post")
+	Long getCurtidas(@Param("post") Post post);
+	
 }
