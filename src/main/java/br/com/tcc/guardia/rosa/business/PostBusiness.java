@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.tcc.guardia.rosa.dto.LikedPostDTO;
 import br.com.tcc.guardia.rosa.exception.DislikeNotAllowedException;
 import br.com.tcc.guardia.rosa.exception.PostNotFoundException;
 import br.com.tcc.guardia.rosa.form.LikePostForm;
@@ -68,7 +69,7 @@ public class PostBusiness {
 		return null;
 	}
 	
-	public void like(LikePostForm likePostForm) throws PostNotFoundException, DislikeNotAllowedException {
+	public LikedPostDTO like(LikePostForm likePostForm) throws PostNotFoundException, DislikeNotAllowedException {
 		Post post = findById(likePostForm.getId());
 		Usuario usuario = usuarioBusiness.findById(likePostForm.getUsuarioId()).get();
 		CurtidaPost curtidaPost = new CurtidaPost();
@@ -89,32 +90,8 @@ public class PostBusiness {
 			dislike(curtidaPost, post);
 		}
 		
-	}
-	
-	public Long likeTeste(LikePostForm likePostForm) throws PostNotFoundException, DislikeNotAllowedException {
-		Post post = findById(likePostForm.getId());
-		
-		Usuario usuario = usuarioBusiness.findById(likePostForm.getUsuarioId()).get();
-		CurtidaPost curtidaPost = new CurtidaPost();
-		
-		if (post == null || usuario == null) {
-			throw new PostNotFoundException("Post não encontrado.");
-		}
-		
-		boolean likedByUser = curtidaPostBusiness.isLikedByUser(usuario, post);
-		if (!likedByUser) {
-			curtidaPost.setPost(post);
-			curtidaPost.setUsuario(usuario);
-			curtidaPostBusiness.save(curtidaPost);
-			
-			repository.save(post);
-		} else {
-			curtidaPost = curtidaPostBusiness.findByPostAndUsuario(post, usuario);
-			dislike(curtidaPost, post);
-		}
-		
-		return curtidaPostBusiness.getCurtidas(post);
-		
+		Long curtidas = curtidaPostBusiness.getCurtidas(post);
+		return new LikedPostDTO(likedByUser, curtidas);
 	}
 	
 	public void dislike(CurtidaPost curtidaPost, Post post) throws PostNotFoundException, DislikeNotAllowedException {
