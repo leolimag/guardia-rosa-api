@@ -3,6 +3,7 @@ package br.com.tcc.guardia.rosa.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -24,9 +25,9 @@ public class PostSocket {
 		this.business = business;
 	}
 	
-	@MessageMapping("/post/like")
-	@SendTo("/topic")
-	public LikedPostDTO  likePost(@RequestBody @Valid LikePostForm likePostForm) {
+	@MessageMapping("/post/like/{postId}")
+	@SendTo("/topic/post/{postId}")
+	public LikedPostDTO  likePost(@RequestBody @Valid LikePostForm likePostForm, @DestinationVariable("postId") Long postId) {
 		try {
 			return business.like(likePostForm);
 		} catch (PostNotFoundException | DislikeNotAllowedException e) {
