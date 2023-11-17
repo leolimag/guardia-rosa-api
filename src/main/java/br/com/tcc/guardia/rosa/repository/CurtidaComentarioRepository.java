@@ -16,4 +16,7 @@ public interface CurtidaComentarioRepository extends JpaRepository<CurtidaComent
 
 	CurtidaComentario findByPostAndUsuarioAndComentario(Post post, Usuario usuario, Comentario comentario);
 	
+	@Query("SELECT COUNT(*) FROM CurtidaComentario cc WHERE cc.comentario = :comentario")
+	Long getCurtidas(@Param("comentario") Comentario comentario);
+	
 }

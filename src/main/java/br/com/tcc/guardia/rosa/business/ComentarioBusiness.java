@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.tcc.guardia.rosa.dto.LikedCommentDTO;
 import br.com.tcc.guardia.rosa.exception.CommentNotFoundException;
 import br.com.tcc.guardia.rosa.exception.DislikeNotAllowedException;
 import br.com.tcc.guardia.rosa.form.CommentForm;
@@ -52,7 +53,7 @@ public class ComentarioBusiness {
 		return null;
 	}
 	
-	public void like(LikeCommentForm likeCommentForm) throws CommentNotFoundException, DislikeNotAllowedException {
+	public LikedCommentDTO like(LikeCommentForm likeCommentForm) throws CommentNotFoundException, DislikeNotAllowedException {
 		Comentario comentario = findById(likeCommentForm.getId());
 		Usuario usuario = usuarioBusiness.findById(likeCommentForm.getUsuarioId()).get();
 		Post post = postBusiness.findById(likeCommentForm.getPostId());
@@ -74,6 +75,9 @@ public class ComentarioBusiness {
 			curtidaComentario = curtidaComentarioBusiness.findByPostAndUsuarioAndComentario(post, usuario, comentario);
 			dislike(curtidaComentario, comentario);
 		}
+		
+		Long curtidas = curtidaComentarioBusiness.getCurtidas(comentario);
+		return new LikedCommentDTO(likedByUser, curtidas);
 	}
 	
 	

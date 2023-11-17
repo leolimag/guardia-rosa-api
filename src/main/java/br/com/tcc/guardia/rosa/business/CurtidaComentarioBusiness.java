@@ -34,4 +34,7 @@ public class CurtidaComentarioBusiness {
 		return repository.findByPostAndUsuarioAndComentario(post, usuario, comentario);
 	}
 	
+	public Long getCurtidas(Comentario comentario) {
+		return repository.getCurtidas(comentario);
+	}
 }
