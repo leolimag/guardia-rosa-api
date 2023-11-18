@@ -13,7 +13,7 @@ public class Main {
 	    Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 	    Message message = Message.creator(
 	      new PhoneNumber("whatsapp:+5513981177560"),
-	      new PhoneNumber("whatsapp:+5513981177560"),
+	      new PhoneNumber("whatsapp:+14143750373"),
 	      "Socorro! Estou em perigo!").create();
 
 	    System.out.println(message.getSid());

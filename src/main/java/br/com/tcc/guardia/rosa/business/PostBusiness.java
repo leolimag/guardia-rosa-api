@@ -98,5 +98,9 @@ public class PostBusiness {
 		curtidaPostBusiness.delete(curtidaPost);
 		repository.save(post);
 	}
+
+	public void delete(Post post) {
+		repository.delete(post);
+	}
 	
 }

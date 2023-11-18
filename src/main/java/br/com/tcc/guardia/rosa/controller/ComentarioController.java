@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,12 +22,9 @@ import br.com.tcc.guardia.rosa.business.CurtidaComentarioBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
 import br.com.tcc.guardia.rosa.dto.ComentarioDTO;
-import br.com.tcc.guardia.rosa.exception.CommentNotFoundException;
-import br.com.tcc.guardia.rosa.exception.DislikeNotAllowedException;
 import br.com.tcc.guardia.rosa.exception.PostNotFoundException;
 import br.com.tcc.guardia.rosa.exception.UserNotFoundException;
 import br.com.tcc.guardia.rosa.form.CommentForm;
-import br.com.tcc.guardia.rosa.form.LikeCommentForm;
 import br.com.tcc.guardia.rosa.model.Comentario;
 import br.com.tcc.guardia.rosa.model.Post;
 import br.com.tcc.guardia.rosa.model.Usuario;
@@ -88,16 +84,6 @@ public class ComentarioController {
 		
 		comentarioBusiness.addComment(commentForm, usuarioBusiness);
 		return ResponseEntity.ok().build();
-	}
-	
-	@PatchMapping("/like")
-	public ResponseEntity<?>  likeComment(@RequestBody @Valid LikeCommentForm likeCommentForm) {
-		try {
-			comentarioBusiness.like(likeCommentForm);
-			return ResponseEntity.ok().build();
-		} catch (CommentNotFoundException | DislikeNotAllowedException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
 	}
 	
 	private ResponseEntity<?> validateUser(Long id) throws UserNotFoundException {

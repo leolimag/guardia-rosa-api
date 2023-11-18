@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,12 +24,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.tcc.guardia.rosa.business.CurtidaPostBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
+import br.com.tcc.guardia.rosa.dto.GuardiaoDTO;
 import br.com.tcc.guardia.rosa.dto.PostDTO;
 import br.com.tcc.guardia.rosa.dto.PostSelectedDTO;
-import br.com.tcc.guardia.rosa.exception.DislikeNotAllowedException;
 import br.com.tcc.guardia.rosa.exception.PostNotFoundException;
 import br.com.tcc.guardia.rosa.exception.UserNotFoundException;
-import br.com.tcc.guardia.rosa.form.LikePostForm;
 import br.com.tcc.guardia.rosa.form.PostForm;
 import br.com.tcc.guardia.rosa.form.UpdatePostForm;
 import br.com.tcc.guardia.rosa.model.Post;
@@ -118,6 +117,17 @@ public class PostController {
 		return ResponseEntity.created(uri).body(new PostDTO(post));
 	}
 	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deletePost(@PathVariable Long id) {
+		Post post = business.findById(id);
+		if (post != null) {
+			business.delete(post);
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.notFound().build();
+	}
+
+	
 	@PutMapping("/{id}")
 	public ResponseEntity<PostDTO> updatePost(@RequestBody @Valid UpdatePostForm postForm, @PathVariable Long id) {
 		if (business.findById(id) != null) {
@@ -125,16 +135,6 @@ public class PostController {
 			return ResponseEntity.ok(new PostDTO(post));
 		}
 		return ResponseEntity.notFound().build();
-	}
-	
-	@PatchMapping("/like")
-	public ResponseEntity<?>  likePost(@RequestBody @Valid LikePostForm likePostForm) {
-		try {
-			business.like(likePostForm);
-			return ResponseEntity.ok().build();
-		} catch (PostNotFoundException | DislikeNotAllowedException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
 	}
 	
 	private ResponseEntity<?> validateUser(Long id) throws UserNotFoundException {
