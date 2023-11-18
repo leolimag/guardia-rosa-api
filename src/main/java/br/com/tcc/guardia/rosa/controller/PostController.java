@@ -24,7 +24,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.tcc.guardia.rosa.business.CurtidaPostBusiness;
 import br.com.tcc.guardia.rosa.business.PostBusiness;
 import br.com.tcc.guardia.rosa.business.UsuarioBusiness;
-import br.com.tcc.guardia.rosa.dto.GuardiaoDTO;
 import br.com.tcc.guardia.rosa.dto.PostDTO;
 import br.com.tcc.guardia.rosa.dto.PostSelectedDTO;
 import br.com.tcc.guardia.rosa.exception.PostNotFoundException;
@@ -126,7 +125,6 @@ public class PostController {
 		}
 		return ResponseEntity.notFound().build();
 	}
-
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<PostDTO> updatePost(@RequestBody @Valid UpdatePostForm postForm, @PathVariable Long id) {

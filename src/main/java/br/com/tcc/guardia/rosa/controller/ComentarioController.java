@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,14 +34,14 @@ import br.com.tcc.guardia.rosa.model.Usuario;
 @RequestMapping("/api/comments")
 public class ComentarioController {
 	
-	private final ComentarioBusiness comentarioBusiness;
+	private final ComentarioBusiness business;
 	private final UsuarioBusiness usuarioBusiness;
 	private final PostBusiness postBusiness;
 	private final CurtidaComentarioBusiness curtidaComentarioBusiness;
 	
 	@Autowired
 	public ComentarioController(ComentarioBusiness comentarioBusiness, UsuarioBusiness usuarioBusiness, PostBusiness postBusiness, CurtidaComentarioBusiness curtidaComentarioBusiness) {
-		this.comentarioBusiness = comentarioBusiness;
+		this.business = comentarioBusiness;
 		this.usuarioBusiness = usuarioBusiness;
 		this.postBusiness = postBusiness;
 		this.curtidaComentarioBusiness = curtidaComentarioBusiness;
@@ -62,7 +63,7 @@ public class ComentarioController {
 		final Usuario finalUsuario = usuario;
 		
 		Pageable pageable 	= PageRequest.of(page, quantity);
-		Page<Comentario> comentarios = comentarioBusiness.getCommentsByPost(id, pageable);
+		Page<Comentario> comentarios = business.getCommentsByPost(id, pageable);
 		
 		comentarios .forEach(comentario -> {
 			comentario.setCurtido(curtidaComentarioBusiness.isLikedByUser(finalUsuario, post, comentario));
@@ -82,8 +83,18 @@ public class ComentarioController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		
-		comentarioBusiness.addComment(commentForm, usuarioBusiness);
+		business.addComment(commentForm, usuarioBusiness);
 		return ResponseEntity.ok().build();
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteComentario(@PathVariable Long id) {
+		Comentario comentario = business.findById(id);
+		if (comentario != null) {
+			business.delete(comentario);
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.notFound().build();
 	}
 	
 	private ResponseEntity<?> validateUser(Long id) throws UserNotFoundException {

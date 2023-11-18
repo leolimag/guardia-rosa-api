@@ -85,5 +85,9 @@ public class ComentarioBusiness {
 		curtidaComentarioBusiness.delete(curtidaComentario);
 		repository.save(comentario);
 	}
+
+	public void delete(Comentario comentario) {
+		repository.delete(comentario);
+	}
 	
 }
