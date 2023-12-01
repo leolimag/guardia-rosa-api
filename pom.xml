@@ -7,6 +7,17 @@
 		<version>2.7.9</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+		<finalName>guardia-rosa-1</finalName>
+	</build>
+	
 	<groupId>br.com.tcc</groupId>
 	<artifactId>guardia-rosa</artifactId>
 	<version>1</version>
@@ -80,14 +91,4 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>
