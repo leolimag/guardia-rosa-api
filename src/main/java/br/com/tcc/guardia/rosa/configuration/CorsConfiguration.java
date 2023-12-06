@@ -10,7 +10,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-           	.allowedOrigins("http://localhost:8100", "http://localhost:4200", "http://localhost:8080", "capacitor://localhost", "http://localhost", "ionic://localhost") //mudar para capacitor://localhost ou *
+           	.allowedOrigins("*") //mudar para capacitor://localhost ou *
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS",  "HEAD", "TRACE", "CONNECT");
     }
     
